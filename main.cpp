@@ -10,27 +10,7 @@ extern FILE *yyin;
 ASTNode* program = NULL;
 
 //const std::string AST_NODE_NAMES[] = 
-const char* const AST_NODE_NAMES[] = 
-{
-	"program",
-	"tact",
-	"int_constant",
-	"identifier",
-	"const_spec",
-	"const_spec_body",
-	"const_infix",
-	"const_prefix",
-	"const_pref_term",
-	"const_term",
-	"proc_def",
-	"proc_id",
-	"state_def",
-	"state_id",
-	"statements_list",
-	"timeout",
-	"empty_statement",
-	"compound_statement",
-};
+
 
 int main(int argc, char **argv)
 {
@@ -70,7 +50,7 @@ int main(int argc, char **argv)
 	std::cout<<"parser finished"<<std::endl;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	if(0 == parse_result)
 	{
 		std::ofstream output_file;
@@ -88,6 +68,9 @@ int main(int argc, char **argv)
 		{
 			ASTNode* node = nodes_to_print.top();
 			nodes_to_print.pop();
+
+			if(NULL == node) 
+				continue;
 
 			if(NUM_AST_NODE_TYPES == node->type)//found terminator node - upping tree level
 			{

@@ -57,15 +57,16 @@
 %token <token> TIS				"IS"		
 %token <token> TACTIVE			"ACTIVE"	
 %token <token> TINACTIVE		"INACTIVE"	
-%token <token> TBOOL			"BOOL"		
-%token <token> TVOID			"VOID"		
-%token <token> TFLOAT			"FLOAT"	
-%token <token> TDOUBLE			"DOUBLE"	
-%token <token> TSIGNED			"SIGNED"
-%token <token> TUNSIGNED		"UNSIGNED"	
-%token <token> TSHORT			"SHORT"	
-%token <token> TLONG			"LONG"		
-%token <token> TINT				"INT"		
+
+%token <string> TBOOL			"BOOL"		
+%token <string> TVOID			"VOID"		
+%token <string> TFLOAT			"FLOAT"	
+%token <string> TDOUBLE			"DOUBLE"	
+%token <string> TSIGNED			"SIGNED"
+%token <string> TUNSIGNED		"UNSIGNED"	
+%token <string> TSHORT			"SHORT"	
+%token <string> TLONG			"LONG"		
+%token <string> TINT				"INT"		
 
 %token <string> TIDENTIFIER		"identifier"
 %token <string> TFCONST			"floating-point constant"
@@ -85,7 +86,7 @@
 %token <string> TPERIOD			"."
 %token <string> TAND			"&"
 %token <string> TNOT			"!"
-%token <string> TTILDA			"~"
+%token <string> TTILDE			"~"
 %token <string> TMINUS			"-"
 %token <string> TPLUS			"+"
 %token <string> TMUL			"*"
@@ -151,6 +152,25 @@
 %type <ast_node>			statements_list
 %type <ast_node>			compound_statement
 
+%type <ast_node>			start_statement
+%type <ast_node>			stop_statement
+%type <ast_node>			error_statement
+
+%type <ast_node>			expr
+%type <ast_node>			assignment_expr
+%type <ast_node>			binary_expr
+%type <string>				binary_op
+%type <ast_node>			unary_expr
+%type <string>				unary_op
+%type <ast_node>			postfix_expr
+%type <ast_node>			arg_expr_list
+%type <ast_node>			primary_expr
+%type <string>				assignement_op
+%type <ast_node>			cast_expr
+%type <string>				c_type_spec
+%type <ast_node>			expression_statement
+%type <string>				postfix_op
+
 /***********************************************/
 /*                  DESTRUCTORS                */
 /***********************************************/
@@ -191,6 +211,11 @@
 /***********************************************/
 %start program /*Start symbol*/
 %error-verbose /*Extended error reporting*/
+
+%left TINC TDEC UMINUS TTILDE TNOT
+
+//operator precedences
+//%left TLOR TLAND TOR TXOR TAND TEQ TNEQ TLT TGT TLE TGE TLSHIFT TRSHIFT TPLUS TMINUS TMUL TDIV TPERC
 
 %%
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,7 +348,7 @@ const_pref_term		:	const_prefix const_term
 					;
 
 //operator strings are transfered here with default action $$=$1;
-const_prefix		:	TTILDA | TNOT | TPLUS | TMINUS;
+const_prefix		:	TTILDE | TNOT | TPLUS | TMINUS;
 const_infix			:	TPLUS | TMINUS | TMUL | TDIV | TPERC | TLSHIFT | TRSHIFT | TAND | TXOR | TOR | TLAND | TLOR;
 
 const_term			:	TICONST {$$=new ASTNode(ASTNODE_CONST_TERM);$$->val=$1;}
@@ -472,15 +497,25 @@ statement			:	TSEMIC {$$ = new ASTNode(ASTNODE_EMPTY_STATEMENT);$1;}
 					|	compound_statement
 					//|	switch_spec 
 					//|	event_react_spec 
-					//|	start_spec 
-					//|	stop_spec 
-					//|	error_spec 
+					|	start_statement 
+					|	stop_statement 
+					|	error_statement 
 					//|	loop_decl 
 					//|	set_cur_sf_spec 
 					//|	restart_cur_proc_spec 
 					//|	reset_timer_spec 
 					//|	var_equation
+					|	expression_statement
 					;
+
+expression_statement:	expr TSEMIC
+						{
+							$$ = $1;
+							$2;
+						}
+					;
+
+//selection_statement	:	
 
 compound_statement	:	TLBRACE statements_list TRBRACE
 						{
@@ -502,6 +537,178 @@ compound_statement	:	TLBRACE statements_list TRBRACE
 							$1;$2;
 						}
 					;
+
+start_statement		:	TSTART proc_id TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_START_STATEMENT);
+							$$->children.push_back($2);
+							$1;$3;
+						}
+					;
+
+stop_statement		:	TSTOP proc_id TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_STOP_STATEMENT);
+							$$->children.push_back($2);
+							$1;$3;
+						}
+					|	TSTOP TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_STOP_STATEMENT);
+							$1;$2;
+						}
+					;
+
+error_statement		:	TERROR proc_id TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_ERROR_STATEMENT);
+							$$->children.push_back($2);
+							$1;$3;
+						}
+					|	TERROR TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_ERROR_STATEMENT);
+							$1;$2;
+						}
+					;
+
+
+//===================EXPRESSIONS===============================================
+expr 		: assignment_expr 
+	 		;
+	 
+assignment_expr	:	binary_expr
+				|	unary_expr assignement_op assignment_expr 
+					{
+						ASTNode* assignment_op = new ASTNode(ASTNODE_ASSIGNMENT_OP);
+						assignment_op->val = $2;
+
+						$$ = new ASTNode(ASTNODE_ASSIGNMENT_EXPRESSION);
+						$$->children.push_back($1);
+						$$->children.push_back(assignment_op);
+						$$->children.push_back($3);
+					}
+				;
+				
+binary_expr	:	cast_expr 
+			|	binary_expr binary_op cast_expr
+				{
+					ASTNode* binary_op = new ASTNode(ASTNODE_BINARY_OP);
+					binary_op->val = $2;
+
+					$$ = new ASTNode(ASTNODE_BINARY_EXPRESSION);
+					$$->children.push_back($1);
+					$$->children.push_back(binary_op);
+					$$->children.push_back($3);
+				}
+			;
+
+unary_expr 	:	postfix_expr 
+			|	unary_op unary_expr 
+				{
+					ASTNode* unary_op = new ASTNode(ASTNODE_UNARY_OP);
+					unary_op->val = $1;
+
+					$$ = new ASTNode(ASTNODE_UNARY_EXPRESSION);
+					$$->children.push_back(unary_op);
+					$$->children.push_back($2);
+				}
+		   	;
+
+postfix_expr	:	primary_expr 
+				|	TIDENTIFIER TLPAREN TRPAREN // function call w/o arguments
+					{
+						ASTNode* func_id = new ASTNode(ASTNODE_IDENTIFIER);
+						func_id->val = $1;
+
+						$$ = new ASTNode(ASTNODE_FUNCTION_CALL);
+						$$->children.push_back(func_id);
+					}
+				|	TIDENTIFIER TLPAREN arg_expr_list TRPAREN // function call w/ arguments
+					{
+						ASTNode* func_id = new ASTNode(ASTNODE_IDENTIFIER);
+						func_id->val = $1;
+
+						$$ = new ASTNode(ASTNODE_FUNCTION_CALL);
+						$$->children.push_back(func_id);
+						$$->children.push_back($3); //arg_expr_list
+						$2;$4;
+					}
+				|	postfix_expr postfix_op 
+					{
+						ASTNode* postfix_op = new ASTNode(ASTNODE_POSTFIX_OP);
+						postfix_op->val = $2;
+
+						$$ = new ASTNode(ASTNODE_POSTFIX_EXPRESSION);
+						$$->children.push_back($1);
+						$$->children.push_back(postfix_op);
+					}
+				;
+
+arg_expr_list	:	arg_expr_list TCOMMA assignment_expr
+					{
+						$$ = $1;
+						$1->children.push_back($3);
+						$2;
+					}
+				|	assignment_expr
+					{
+						$$ = new ASTNode(ASTNODE_ARG_EXPR_LIST);
+						$$->children.push_back($1); 
+					}
+				;
+
+primary_expr	:	TICONST 
+					{
+						ASTNode* iconst = new ASTNode(ASTNODE_CONST_TERM);
+						iconst->val = $1;
+
+						$$ = new ASTNode(ASTNODE_PRIMARY_EXPRESSION);
+						$$->children.push_back(iconst);
+					}
+				|	TFCONST 
+					{
+						ASTNode* fconst = new ASTNode(ASTNODE_CONST_TERM);
+						fconst->val = $1;
+
+						$$ = new ASTNode(ASTNODE_PRIMARY_EXPRESSION);
+						$$->children.push_back(fconst);
+					}
+				|	TIDENTIFIER
+					{
+						//$$ = NULL;
+						///*
+						ASTNode* id = new ASTNode(ASTNODE_IDENTIFIER);
+						id->val = $1;
+
+						$$ = new ASTNode(ASTNODE_PRIMARY_EXPRESSION);
+						$$->children.push_back(id);
+						//*/
+					}
+				|	TLPAREN expr TRPAREN
+					{
+						$$ = new ASTNode(ASTNODE_PRIMARY_EXPRESSION);
+						$$->children.push_back($2);
+						$1;$3;
+					}
+				//|	TIDENTIFIER TACTIVE {$$ = NULL;} // reflex has more of those than IndustrialC
+				//|	TIDENTIFIER TINACTIVE {$$ = NULL;}
+				;
+
+cast_expr		:	unary_expr 
+				|	TLPAREN c_type_spec TRPAREN cast_expr 
+				{
+					$$ = NULL;
+				}
+		  		;
+
+postfix_op		:	TINC | TDEC;
+binary_op		:	TLOR | TLAND | TOR | TXOR | TAND | TEQ | TNEQ | TLT | TGT | TLE | TGE | TLSHIFT | TRSHIFT | TPLUS | TMINUS | TMUL | TDIV | TPERC;
+unary_op		:	TINC | TDEC | TMINUS | TTILDE | TNOT;	   	
+assignement_op	:	TASSGN | TR_ASSGN | TL_ASSGN | TPLUS_ASSGN | TMINUS_ASSGN | TSTAR_ASSGN | TDIV_ASSGN | TPERC_ASSGN | TAND_ASSGN | TXOR_ASSGN | TOR_ASSGN;
+c_type_spec		:	TVOID | TFLOAT | TDOUBLE | TSIGNED | TUNSIGNED | TSHORT | TINT | TLONG;
+//=============================================================================
+
 
 
 //var_spec			:	(phys_var_spec | calc_var_spec), visibility_spec, TSEMIC;

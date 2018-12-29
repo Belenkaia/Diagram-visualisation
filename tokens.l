@@ -55,15 +55,15 @@ IS			(u|U|l|L)*
 "ACTIVE"				return TOKEN(TACTIVE		);
 "INACTIVE"				return TOKEN(TINACTIVE		);
 
-"BOOL"					return TOKEN(TBOOL			);
-"VOID"					return TOKEN(TVOID			);
-"FLOAT"					return TOKEN(TFLOAT			);
-"DOUBLE"				return TOKEN(TDOUBLE		);
-"SIGNED"				return TOKEN(TSIGNED		);
-"UNSIGNED"				return TOKEN(TUNSIGNED		);
-"SHORT"					return TOKEN(TSHORT			);
-"LONG"					return TOKEN(TLONG			);
-"INT"					return TOKEN(TINT			);
+"BOOL"					SAVE_TOKEN;return TOKEN(TBOOL			);
+"VOID"					SAVE_TOKEN;return TOKEN(TVOID			);
+"FLOAT"					SAVE_TOKEN;return TOKEN(TFLOAT			);
+"DOUBLE"				SAVE_TOKEN;return TOKEN(TDOUBLE		);
+"SIGNED"				SAVE_TOKEN;return TOKEN(TSIGNED		);
+"UNSIGNED"				SAVE_TOKEN;return TOKEN(TUNSIGNED		);
+"SHORT"					SAVE_TOKEN;return TOKEN(TSHORT			);
+"LONG"					SAVE_TOKEN;return TOKEN(TLONG			);
+"INT"					SAVE_TOKEN;return TOKEN(TINT			);
 
 {L}({L}|{D})*			{SAVE_TOKEN; return TIDENTIFIER	;}
 
@@ -89,7 +89,7 @@ IS			(u|U|l|L)*
 "."						{SAVE_TOKEN; return TPERIOD		;}
 "&"						{SAVE_TOKEN; return TAND		;}
 "!"						{SAVE_TOKEN; return TNOT		;}
-"~"						{SAVE_TOKEN; return TTILDA		;}
+"~"						{SAVE_TOKEN; return TTILDE		;}
 "-"						{SAVE_TOKEN; return TMINUS		;}
 "+"						{SAVE_TOKEN; return TPLUS		;}
 "*"						{SAVE_TOKEN; return TMUL		;}

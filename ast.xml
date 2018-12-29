@@ -27,9 +27,21 @@
 			<const_pref_term>
 				<const_term>5</const_term>
 			</const_pref_term>
-			<const_infix>-</const_infix>
+			<const_infix>/</const_infix>
 			<const_pref_term>
 				<const_term>1</const_term>
+			</const_pref_term>
+			<const_infix>%</const_infix>
+			<const_pref_term>
+				<const_term>2</const_term>
+			</const_pref_term>
+			<const_infix>||</const_infix>
+			<const_pref_term>
+				<const_term>1</const_term>
+			</const_pref_term>
+			<const_infix>&</const_infix>
+			<const_pref_term>
+				<const_term>10</const_term>
 			</const_pref_term>
 		</const_spec_body>
 	</const_spec>
@@ -84,7 +96,9 @@
 		<state_def>
 			<state_id>Start</state_id>
 			<statements_list>
-				<empty_statement></empty_statement>
+				<primary_expression>
+					<identifier>a</identifier>
+				</primary_expression>
 			</statements_list>
 		</state_def>
 	</proc_def>
