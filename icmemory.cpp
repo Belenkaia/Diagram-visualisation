@@ -51,6 +51,11 @@ inline void ic_mem_delete(void* ptr)
 	std::free(ptr);
 }
 
+void __attribute__ ((destructor))  dtor() //destructor to check for memory leaks
+{ 
+	std::cout<<"pointers still allocated: "<<get_num_allocs()<<std::endl;
+}
+
 //for C++11+ comment out the throws
 void* operator new(std::size_t sz)throw (std::bad_alloc) {return ic_mem_new(sz);}
 void* operator new[](std::size_t sz)throw (std::bad_alloc) {return ic_mem_new(sz);}

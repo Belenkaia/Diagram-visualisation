@@ -1,4 +1,4 @@
-ReflexAST -o "output.cpp" "input.rcs"
+ReflexAST -o "ast.xml" "input.rcs"
 
 
 

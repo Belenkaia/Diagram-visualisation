@@ -1,4 +1,3 @@
-
 %{
 	#include <stdio.h>
 	#include <stdarg.h> 
@@ -67,10 +66,10 @@
 %token <token> TSHORT			"SHORT"	
 %token <token> TLONG			"LONG"		
 %token <token> TINT				"INT"		
+
 %token <string> TIDENTIFIER		"identifier"
 %token <string> TFCONST			"floating-point constant"
 %token <string> TICONST			"integer constant"
-
 
 %token <token> TLPAREN			"left parentheses"
 %token <token> TRPAREN			"right parentheses"
@@ -126,7 +125,7 @@
 %type <node_list>			const_enum_list
 %type <node_list>			func_decl_list
 %type <node_list>			register_spec_list	
-//%type <node_list>			proc_def_list
+%type <node_list>			proc_def_list
 
 %type <ast_node>			const_or_enum_spec	
 %type <ast_node>			const_spec			
@@ -139,11 +138,25 @@
 %type <ast_node>			const_term			
 %type <ast_node>			enumerator_spec			
 
+%type <ast_node>			proc_def
+%type <ast_node>			proc_id
+
+%type <node_list>			state_def_list
+%type <ast_node>			state_def
+
+%type <ast_node>			state_id 
+%type <ast_node>			timeout_arg 
+%type <ast_node>			timeout_statement 
+%type <ast_node>			statement
+%type <ast_node>			statements_list
+%type <ast_node>			compound_statement
+
 /***********************************************/
 /*                  DESTRUCTORS                */
 /***********************************************/
 //these are to tell Bison how to properly clean up any non-terminals that
 //had been left astray after an error
+
 %destructor {} <token>
 %destructor 
 {
@@ -184,7 +197,7 @@
 
 //Why is tact optional?
 //				      1         2         3      4          5        6           7
-program			:	TPROGR TIDENTIFIER TLBRACE tact program_body /*proc_def_list*/{} TRBRACE 
+program			:	TPROGR TIDENTIFIER TLBRACE tact program_body proc_def_list TRBRACE 
 					{
 						ASTNode* program_name = new ASTNode(ASTNODE_IDENTIFIER);
 						program_name->val = $2;
@@ -196,10 +209,10 @@ program			:	TPROGR TIDENTIFIER TLBRACE tact program_body /*proc_def_list*/{} TRB
 						//For lists - merge them with program's children
 						//(no such nodes in AST as lists of items)
 						if(NULL != $5) program->children.splice(program->children.end(), *$5); //program_body
-						//if(NULL != $6) program->children.splice(program->children.end(), *$6); //proc_def_list
+						if(NULL != $6) program->children.splice(program->children.end(), *$6); //proc_def_list
 
 						delete $5;
-						//delete $6;
+						delete $6;
 						$1;$3;$7;
 					}
 				;
@@ -309,7 +322,7 @@ const_pref_term		:	const_prefix const_term
 						}
 					;
 
-//operator strings are transfered with default action $$=$1;
+//operator strings are transfered here with default action $$=$1;
 const_prefix		:	TTILDA | TNOT | TPLUS | TMINUS;
 const_infix			:	TPLUS | TMINUS | TMUL | TDIV | TPERC | TLSHIFT | TRSHIFT | TAND | TXOR | TOR | TLAND | TLOR;
 
@@ -319,44 +332,189 @@ const_term			:	TICONST {$$=new ASTNode(ASTNODE_CONST_TERM);$$->val=$1;}
 					//|	TLPAREN const_exp_body TRPAREN  
 					;
 
-enumerator_spec			:	"enumerator_spec" {$$ = NULL;};
+enumerator_spec			:	"enumerator_spec" {$$ = NULL;};//STUB
 
 /*
-enumerator_spec		:	TENUM TLBRACE enumerator_list TRBRACE;
-enumerator_list		:	enumerator | (enumerator, TCOMMA, enumerator_list);
-enumerator			:	const_id | (const_id, TASSGN, const_exp_body);
+enumerator_spec		:	TENUM TLBRACE enumerator_list TRBRACE
+						{
+							
+						}
+					;
+
+enumerator_list		:	enumerator 
+					|	enumerator TCOMMA enumerator_list
+					;
+
+enumerator			:	const_id 
+					|	const_id TASSGN const_exp_body
+					;
 */
 
 
 //Auxiliary node for iteration, not present in original grammar
-func_decl_list	:	"func_decl_list" {$$ = NULL;}
+func_decl_list	:	"func_decl_list" {$$ = NULL;}//STUB
 				;
 
 //Auxiliary node for iteration, not present in original grammar
-register_spec_list	:	"register_spec_list" {$$ = NULL;}
+register_spec_list	:	"register_spec_list" {$$ = NULL;}//STUB
 					;
 
 //Auxiliary node for iteration, not present in original grammar
-/*
-proc_def_list	:	"proc_def_list" {$$ = NULL;}
+proc_def_list	:	proc_def
+					{
+						$$ = new ASTNodeList;
+						$$->push_back($1);
+					}
+				|	proc_def_list proc_def
+					{
+						$1->push_back($2);
+						$$ = $1;
+					}
 				;
-*/
+
+//						  1      2      3           4              5          6
+proc_def			:	TPROC proc_id TLBRACE /*var_list*/{} state_def_list TRBRACE
+						{
+							$$ = new ASTNode(ASTNODE_PROC_DEF);
+							$$->children.push_back($2); //proc_id
+							$$->children.splice($$->children.end(), *$5);//add state defs as children
+							delete $5; //state_def_list
+							$1;$3;$6;
+						}
+					;
+
+proc_id				:	TIDENTIFIER 
+						{
+							ASTNode* proc_id = new ASTNode(ASTNODE_IDENTIFIER);
+							proc_id->val = $1;
+
+							$$ = new ASTNode(ASTNODE_PROCID);
+							$$->children.push_back(proc_id);
+						}
+					;
+
 /*
-process_spec		:	TPROC, proc_id, TLBRACE, [var_list], {func_state}, TRBRACE;
-
-proc_id				:	TIDENTIFIER;
-var_list			:	{var_spec | var_decl};
-var_spec			:	(phys_var_spec | calc_var_spec), visibility_spec, TSEMIC;
-phys_var_spec		:	int_type_spec, var_id, TEQ, TLBRACE, reg_bits_spec_list, TRBRACE; 
-reg_bits_spec_list	:	reg_bits_spec | (reg_bits_spec, TCOMMA, reg_bits_spec_list);
-reg_bits_spec		:	reg_id, TLBRACKET, int_num, TRBRACKET; 
-calc_var_spec		:	(c_type_spec | TBOOL), var_id; 
-visibility_spec		:	TLOCAL | (TFOR, TALL) | (TFOR, proc_id_list);
-proc_id_list		:	proc_id | (proc_id, TCOMMA , proc_id_list);
-
-var_decl			:	TFROM, TPROC, proc_id, var_id_list, TSEMIC;
-var_id_list			:	var_id | (var_id, TCOMMA, var_id_list);
+var_list			:	%empty {$$ = NULL;}
+					|	{var_spec | var_decl}
+					;
 */
+
+//Auxilisry list
+state_def_list		:	state_def
+						{
+							$$ = new ASTNodeList;
+							$$->push_back($1);
+						}
+					|	state_def_list state_def
+						{
+							$1->push_back($2);
+							$$ = $1;
+						}
+					;
+
+//						   1       2       3         4            5             6
+state_def			:	TSTATE state_id TLBRACE statements_list timeout_statement TRBRACE
+						{
+							
+							$$ = new ASTNode(ASTNODE_STATE_DEF);
+							$$->children.push_back($2); //state_id
+							$$->children.push_back($4); //statements_list
+							$$->children.push_back($5); //timeout_statement
+							$1;$3;$6;
+						}
+					|	TSTATE state_id TLBRACE statements_list TRBRACE
+						{
+							$$ = new ASTNode(ASTNODE_STATE_DEF);
+							$$->children.push_back($2); //state_id
+							$$->children.push_back($4); //statements_list
+							$1;$3;$5;
+						}
+					;
+
+state_id			:	TIDENTIFIER
+						{
+							$$ = new ASTNode(ASTNODE_STATE_ID);
+							$$->val = $1;
+						}
+					;
+
+statements_list		:	statements_list statement
+						{
+							$$ = $1;
+							$1->children.push_back($2);
+						}
+					|	statement
+						{
+							$$ = new ASTNode(ASTNODE_STATEMENTS_LIST);
+							$$->children.push_back($1);
+						}
+					;
+
+timeout_statement	:	TTIMEOUT timeout_arg statement
+						{
+							$$ = new ASTNode(ASTNODE_TIMEOUT);
+							$$->children.push_back($2);
+							$$->children.push_back($3);
+							$1;
+						}
+					;
+
+timeout_arg			:	TICONST
+						{
+							$$ = new ASTNode(ASTNODE_ICONST);
+							$$->val = $1;
+						}
+						|	const_id {$$ = $1;}
+					//	|	var_id
+					;
+
+statement			:	TSEMIC {$$ = new ASTNode(ASTNODE_EMPTY_STATEMENT);$1;}
+					|	compound_statement
+					//|	switch_spec 
+					//|	event_react_spec 
+					//|	start_spec 
+					//|	stop_spec 
+					//|	error_spec 
+					//|	loop_decl 
+					//|	set_cur_sf_spec 
+					//|	restart_cur_proc_spec 
+					//|	reset_timer_spec 
+					//|	var_equation
+					;
+
+compound_statement	:	TLBRACE statements_list TRBRACE
+						{
+							$$ = new ASTNode(ASTNODE_COMPOUND_STATEMENT);
+
+							///version 1: with statements_list node
+							$$->children.push_back($2);
+
+							///version 2: without statements_list in AST
+							//$$->children.splice($$->children.end(), *$2);
+							//delete $2;
+							//
+
+							$1;$3;
+						}
+					|	TLBRACE TRBRACE // this one is not in Reflex
+						{
+							$$ = new ASTNode(ASTNODE_COMPOUND_STATEMENT);
+							$1;$2;
+						}
+					;
+
+
+//var_spec			:	(phys_var_spec | calc_var_spec), visibility_spec, TSEMIC;
+//phys_var_spec		:	int_type_spec, var_id, TEQ, TLBRACE, reg_bits_spec_list, TRBRACE; 
+//reg_bits_spec_list	:	reg_bits_spec | (reg_bits_spec, TCOMMA, reg_bits_spec_list);
+//reg_bits_spec		:	reg_id, TLBRACKET, int_num, TRBRACKET; 
+//calc_var_spec		:	(c_type_spec | TBOOL), var_id; 
+//visibility_spec		:	TLOCAL | (TFOR, TALL) | (TFOR, proc_id_list);
+//proc_id_list		:	proc_id | (proc_id, TCOMMA , proc_id_list);
+
+//var_decl			:	TFROM, TPROC, proc_id, var_id_list, TSEMIC;
+//var_id_list			:	var_id | (var_id, TCOMMA, var_id_list);
+
 
 /*
 
@@ -370,11 +528,6 @@ addr_2				:	int_num;
 register_size		:	"8" | "16";
 reg_id				:	TIDENTIFIER;
 
-
-
-
-func_state			:	TSTATE, func_state_id, TLBRACE, ([func_state_body],timeout_react_spec) | timeout_react_spec, TRBRACE;
-func_state_body		:	{react_spec};
 react_spec			:	TSEMIC | (TLBRACE, func_state_body, TRBRACE) | switch_spec | event_react_spec | start_spec | stop_spec | error_spec | loop_decl | set_cur_sf_spec | restart_cur_proc_spec | reset_timer_spec | var_equation;
 
 switch_spec			:	TSWITCH, TLPAREN, event, TRPAREN, TLBRACE, {case_spec}, TRBRACE;
@@ -405,9 +558,6 @@ function			:	func_id, TLPAREN, func_param_list, TRPAREN;
 func_param_list		:	event | (event, {TCOMMA, event});
 
 situation			:	TPROC, proc_id, ((TIN, TSTATE, (TSTOP | TERROR)) | (TIS, (TACTIVE | TINACTIVE)));
-
-timeout_react_spec	:	TTIMEOUT, (number | const_id | var_id), react_spec;
-func_state_id		:	TIDENTIFIER;
 
 var_id				:	TIDENTIFIER;
 

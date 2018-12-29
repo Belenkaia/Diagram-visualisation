@@ -191,10 +191,6 @@
 			Name="FlexBison"
 			>
 			<File
-				RelativePath="..\input.rcs"
-				>
-			</File>
-			<File
 				RelativePath="..\parser.y"
 				>
 				<FileConfiguration
@@ -210,6 +206,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\input.rcs"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

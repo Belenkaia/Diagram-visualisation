@@ -3,6 +3,24 @@ PROGR blah
 	TACT 777;
 	
 	CONST habalaha -3+5*7-2+5-1;
-	CONST qwgdder 666;
 	CONST wewe 123.4567;
+	
+	PROC asdfgwrthb 
+	{
+		STATE Start
+		{
+			{{{{{}}};{}}{}{}}
+			;;;;;;
+			TIMEOUT 5 ;		
+		}
+		STATE Start
+		{
+			;	
+		}
+	}
+	
+	PROC asdfgwrthb 
+	{
+		STATE s {;}
+	}
 }

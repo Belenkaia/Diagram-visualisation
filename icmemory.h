@@ -24,6 +24,9 @@ void* operator new(std::size_t sz)/*throw (std::bad_alloc)*/;
 void* operator new[](std::size_t sz)/*throw (std::bad_alloc)*/;
 void operator delete(void* ptr)/*throw ()*/;
 void operator delete[](void* ptr)/*throw ()*/;
+//#ifdef ICDEBUG
+void __attribute__ ((destructor))  dtor(); //destructor to check for memory leaks
+//#endif 
 #endif /*ICDEBUG*/
 unsigned long get_num_allocs();
 //=================================================================================================
