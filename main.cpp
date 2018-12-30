@@ -9,14 +9,10 @@ extern FILE *yyin;
 
 ASTNode* program = NULL;
 
-//const std::string AST_NODE_NAMES[] = 
-
+unsigned long line_num = 1;
 
 int main(int argc, char **argv)
 {
-	
-
-	
 	std::string input_filename = "input.rsc";
 	std::string output_filename = "ast.xml";
 
@@ -110,7 +106,6 @@ int main(int argc, char **argv)
 				}
 			}
 		}
-
 		output_file.close();
 	}
 	

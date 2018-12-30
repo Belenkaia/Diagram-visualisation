@@ -22,18 +22,13 @@ IS			(u|U|l|L)*
 
 " "+					;
 "\t"					;
-"\n"					; 	
+"\n"					line_num++; 		
 
 "PROGR"					return TOKEN(TPROGR			);
 "TACT"					return TOKEN(TTACT			);
 "CONST"					return TOKEN(TCONST			);
 "ENUM"					return TOKEN(TENUM			);
-"INPUT"					return TOKEN(TINPUT			);
-"OUTPUT"				return TOKEN(TOUTPUT		);
 "PROC"					return TOKEN(TPROC			);
-"LOCAL"					return TOKEN(TLOCAL			);
-"FOR"					return TOKEN(TFOR			);
-"ALL"					return TOKEN(TALL			);
 "FROM"					return TOKEN(TFROM			);
 "STATE"					return TOKEN(TSTATE			);
 "SWITCH"				return TOKEN(TSWITCH		);
@@ -55,15 +50,21 @@ IS			(u|U|l|L)*
 "ACTIVE"				return TOKEN(TACTIVE		);
 "INACTIVE"				return TOKEN(TINACTIVE		);
 
-"BOOL"					SAVE_TOKEN;return TOKEN(TBOOL			);
-"VOID"					SAVE_TOKEN;return TOKEN(TVOID			);
-"FLOAT"					SAVE_TOKEN;return TOKEN(TFLOAT			);
-"DOUBLE"				SAVE_TOKEN;return TOKEN(TDOUBLE		);
-"SIGNED"				SAVE_TOKEN;return TOKEN(TSIGNED		);
-"UNSIGNED"				SAVE_TOKEN;return TOKEN(TUNSIGNED		);
-"SHORT"					SAVE_TOKEN;return TOKEN(TSHORT			);
-"LONG"					SAVE_TOKEN;return TOKEN(TLONG			);
-"INT"					SAVE_TOKEN;return TOKEN(TINT			);
+"INPUT"					{SAVE_TOKEN;return TINPUT;		}
+"OUTPUT"				{SAVE_TOKEN;return TOUTPUT;		}
+"LOCAL"					{SAVE_TOKEN;return TLOCAL;		}
+"FOR"					{SAVE_TOKEN;return TFOR;		}
+"ALL"					{SAVE_TOKEN;return TALL;		}
+
+"BOOL"					{SAVE_TOKEN;return TBOOL;		}
+"VOID"					{SAVE_TOKEN;return TVOID;		}
+"FLOAT"					{SAVE_TOKEN;return TFLOAT;		}
+"DOUBLE"				{SAVE_TOKEN;return TDOUBLE;		}
+"SIGNED"				{SAVE_TOKEN;return TSIGNED;		}
+"UNSIGNED"				{SAVE_TOKEN;return TUNSIGNED;	}
+"SHORT"					{SAVE_TOKEN;return TSHORT;		}
+"LONG"					{SAVE_TOKEN;return TLONG;		}
+"INT"					{SAVE_TOKEN;return TINT;		}
 
 {L}({L}|{D})*			{SAVE_TOKEN; return TIDENTIFIER	;}
 
@@ -81,11 +82,11 @@ IS			(u|U|l|L)*
 "("									return TLPAREN		;
 ")"									return TRPAREN		;
 "["									return TLBRACKET	;
+"]"									return TRBRACKET	;
 ":"									return TCOLON		;
 
 "="						{SAVE_TOKEN; return TASSGN		;}
 ","						{SAVE_TOKEN; return TCOMMA		;}
-"]"						{SAVE_TOKEN; return TRBRACKET	;}
 "."						{SAVE_TOKEN; return TPERIOD		;}
 "&"						{SAVE_TOKEN; return TAND		;}
 "!"						{SAVE_TOKEN; return TNOT		;}

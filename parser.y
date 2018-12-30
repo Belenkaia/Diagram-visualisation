@@ -31,12 +31,12 @@
 %token <token> TTACT			"TACT"	
 %token <token> TCONST			"CONST"
 %token <token> TENUM			"ENUM"	
-%token <token> TINPUT			"INPUT"
-%token <token> TOUTPUT			"OUTPUT"
+%token <string> TINPUT			"INPUT"
+%token <string> TOUTPUT			"OUTPUT"
 %token <token> TPROC			"PROC"	
-%token <token> TLOCAL			"LOCAL"
-%token <token> TFOR				"FOR"	
-%token <token> TALL				"ALL"	
+%token <string> TLOCAL			"LOCAL"
+%token <string> TFOR			"FOR"	
+%token <string> TALL			"ALL"	
 %token <token> TFROM			"FROM"	
 %token <token> TSTATE			"STATE"
 %token <token> TSWITCH			"SWITCH"
@@ -125,7 +125,7 @@
 %type <ast_node>			tact	
 %type <node_list>			const_enum_list
 %type <node_list>			func_decl_list
-%type <node_list>			register_spec_list	
+%type <node_list>			register_def_list	
 %type <node_list>			proc_def_list
 
 %type <ast_node>			const_or_enum_spec	
@@ -136,8 +136,7 @@
 %type <ast_node>			const_pref_term		
 %type <string>				const_prefix		
 %type <string>				const_infix			
-%type <ast_node>			const_term			
-%type <ast_node>			enumerator_spec			
+%type <ast_node>			const_term				
 
 %type <ast_node>			proc_def
 %type <ast_node>			proc_id
@@ -170,6 +169,40 @@
 %type <string>				c_type_spec
 %type <ast_node>			expression_statement
 %type <string>				postfix_op
+%type <ast_node>			if_statement
+%type <ast_node>			switch_statement
+%type <ast_node>			labeled_statement
+%type <ast_node>			loop_statement
+%type <ast_node>			state_transition
+%type <ast_node>			restart_statement
+%type <ast_node>			reset_statement
+%type <string>				singness_spec
+%type <string>				size_spec
+//%type <string>				int_type_spec
+
+%type <ast_node>			var_def
+%type <ast_node>			phys_var_def
+%type <ast_node>			var_id
+%type <ast_node>			reg_id
+%type <ast_node>			reg_bits_spec_list
+%type <ast_node>			reg_bits_spec
+%type <ast_node>			calc_var_def
+%type <ast_node>			scope_spec
+%type <ast_node>			proc_id_list
+%type <ast_node>			var_list
+%type <ast_node>			var_decl
+%type <ast_node>			var_id_list
+
+%type <ast_node>			register_def
+%type <ast_node>			reg_addr
+%type <ast_node>			register_size
+%type <ast_node>			c_type_spec_list
+%type <ast_node>			func_decl
+%type <ast_node>			func_id
+
+%type <ast_node>			enum_def	
+%type <ast_node>			enum_list	
+%type <ast_node>			enumerator	
 
 /***********************************************/
 /*                  DESTRUCTORS                */
@@ -212,6 +245,9 @@
 %start program /*Start symbol*/
 %error-verbose /*Extended error reporting*/
 
+%nonassoc XIF
+%nonassoc TELSE
+
 %left TINC TDEC UMINUS TTILDE TNOT
 
 //operator precedences
@@ -244,14 +280,14 @@ program			:	TPROGR TIDENTIFIER TLBRACE tact program_body proc_def_list TRBRACE
 
 //Auxiliary node to resolve grammar conflicts caused by multiple consequent optional nodes in program
 program_body	:	%empty {$$=NULL;}
-				|	const_enum_list func_decl_list register_spec_list
+				|	const_enum_list func_decl_list register_def_list
 					{$$=new ASTNodeList;$$->splice($$->end(),*$1);$$->splice($$->end(),*$2);$$->splice($$->end(),*$3);delete $1;delete $2;delete $3;}
 				|	const_enum_list func_decl_list		{$$=new ASTNodeList;$$->splice($$->end(),*$1);$$->splice($$->end(),*$2);delete $1;delete $2;}
-				|	const_enum_list register_spec_list	{$$=new ASTNodeList;$$->splice($$->end(),*$1);$$->splice($$->end(),*$2);delete $1;delete $2;}
-				|	func_decl_list register_spec_list	{$$=new ASTNodeList;$$->splice($$->end(),*$1);$$->splice($$->end(),*$2);delete $1;delete $2;}
+				|	const_enum_list register_def_list	{$$=new ASTNodeList;$$->splice($$->end(),*$1);$$->splice($$->end(),*$2);delete $1;delete $2;}
+				|	func_decl_list register_def_list	{$$=new ASTNodeList;$$->splice($$->end(),*$1);$$->splice($$->end(),*$2);delete $1;delete $2;}
 				|	const_enum_list						{$$=new ASTNodeList;$$->splice($$->end(),*$1);delete $1;}
 				|	func_decl_list						{$$=new ASTNodeList;$$->splice($$->end(),*$1);delete $1;}
-				|	register_spec_list					{$$=new ASTNodeList;$$->splice($$->end(),*$1);delete $1;}
+				|	register_def_list					{$$=new ASTNodeList;$$->splice($$->end(),*$1);delete $1;}
 				;
 
 tact			:	/*%empty {$$ = NULL;} // [tact] is optional
@@ -277,7 +313,7 @@ const_enum_list	:	const_enum_list const_or_enum_spec {$1-> push_back($2); $$ = $
 
 //Might want to exclude this node from grammar
 const_or_enum_spec	:	const_spec {$$ = $1;}
-					|	enumerator_spec {$$ = $1;}
+					|	enum_def {$$ = $1;}
 					; 
 
 const_spec			:	TCONST const_id const_exp_body TSEMIC
@@ -357,31 +393,67 @@ const_term			:	TICONST {$$=new ASTNode(ASTNODE_CONST_TERM);$$->val=$1;}
 					//|	TLPAREN const_exp_body TRPAREN  
 					;
 
-enumerator_spec			:	"enumerator_spec" {$$ = NULL;};//STUB
-
-/*
-enumerator_spec		:	TENUM TLBRACE enumerator_list TRBRACE
+enum_def			:	TENUM TLBRACE enum_list TRBRACE
 						{
-							
+							$$ = new ASTNode(ASTNODE_ENUM_DEF);
+							$$->children.push_back($3);
+							$1;$2;$4;
 						}
 					;
 
-enumerator_list		:	enumerator 
-					|	enumerator TCOMMA enumerator_list
+enum_list			:	enum_list TCOMMA enumerator
+						{
+							$$ = $1;
+							$1->children.push_back($3);
+							delete $2;
+						}
+					|	enumerator
+						{
+							$$ = new ASTNode(ASTNODE_ENUM_LIST);
+							$$->children.push_back($1);
+						}
 					;
 
 enumerator			:	const_id 
+						{
+							$$ = new ASTNode(ASTNODE_ENUM);
+							$$->children.push_back($1);
+						}
 					|	const_id TASSGN const_exp_body
+						{
+							$$ = new ASTNode(ASTNODE_ENUM);
+							$$->children.push_back($1);
+							$$->children.push_back($3);
+							delete $2;
+						}
 					;
-*/
+
 
 
 //Auxiliary node for iteration, not present in original grammar
-func_decl_list	:	"func_decl_list" {$$ = NULL;}//STUB
+func_decl_list	:	func_decl_list func_decl 
+					{
+						$$ = $1;
+						$1->push_back($2);
+					}
+				|	func_decl
+					{
+						$$ = new ASTNodeList;
+						$$->push_back($1);
+					}
 				;
 
 //Auxiliary node for iteration, not present in original grammar
-register_spec_list	:	"register_spec_list" {$$ = NULL;}//STUB
+register_def_list	:	register_def_list register_def
+						{
+							$$ = $1;
+							$1->push_back($2);
+						}
+					|	register_def
+						{
+							$$ = new ASTNodeList;
+							$$->push_back($1);
+						}
 					;
 
 //Auxiliary node for iteration, not present in original grammar
@@ -397,14 +469,24 @@ proc_def_list	:	proc_def
 					}
 				;
 
-//						  1      2      3           4              5          6
-proc_def			:	TPROC proc_id TLBRACE /*var_list*/{} state_def_list TRBRACE
+//						  1      2      3       4            5          6
+proc_def			:	TPROC proc_id TLBRACE var_list state_def_list TRBRACE
 						{
 							$$ = new ASTNode(ASTNODE_PROC_DEF);
 							$$->children.push_back($2); //proc_id
+							$$->children.push_back($4); //var_list
 							$$->children.splice($$->children.end(), *$5);//add state defs as children
 							delete $5; //state_def_list
 							$1;$3;$6;
+						}
+//						  1      2      3           4          5
+					|	TPROC proc_id TLBRACE state_def_list TRBRACE
+						{
+							$$ = new ASTNode(ASTNODE_PROC_DEF);
+							$$->children.push_back($2); //proc_id
+							$$->children.splice($$->children.end(), *$4);//add state defs as children
+							delete $4; //state_def_list
+							$1;$3;$5;
 						}
 					;
 
@@ -418,13 +500,31 @@ proc_id				:	TIDENTIFIER
 						}
 					;
 
-/*
-var_list			:	%empty {$$ = NULL;}
-					|	{var_spec | var_decl}
-					;
-*/
 
-//Auxilisry list
+var_list			:	var_list var_def 
+						{
+							$$ = $1;
+							$1->children.push_back($2);
+						}
+					|	var_list var_decl
+						{
+							$$ = $1;
+							$1->children.push_back($2);
+						}
+					|	var_def 
+						{
+							$$ = new ASTNode(ASTNODE_VAR_LIST);
+							$$->children.push_back($1);
+						}
+					|	var_decl
+						{
+							$$ = new ASTNode(ASTNODE_VAR_LIST);
+							$$->children.push_back($1);
+						}
+					;
+
+
+//Auxiliary list
 state_def_list		:	state_def
 						{
 							$$ = new ASTNodeList;
@@ -440,7 +540,6 @@ state_def_list		:	state_def
 //						   1       2       3         4            5             6
 state_def			:	TSTATE state_id TLBRACE statements_list timeout_statement TRBRACE
 						{
-							
 							$$ = new ASTNode(ASTNODE_STATE_DEF);
 							$$->children.push_back($2); //state_id
 							$$->children.push_back($4); //statements_list
@@ -475,6 +574,9 @@ statements_list		:	statements_list statement
 						}
 					;
 
+//=============================================================================
+//                           STATEMENTS 
+//=============================================================================
 timeout_statement	:	TTIMEOUT timeout_arg statement
 						{
 							$$ = new ASTNode(ASTNODE_TIMEOUT);
@@ -493,29 +595,103 @@ timeout_arg			:	TICONST
 					//	|	var_id
 					;
 
-statement			:	TSEMIC {$$ = new ASTNode(ASTNODE_EMPTY_STATEMENT);$1;}
-					|	compound_statement
-					//|	switch_spec 
-					//|	event_react_spec 
+statement			:	compound_statement
 					|	start_statement 
 					|	stop_statement 
 					|	error_statement 
-					//|	loop_decl 
-					//|	set_cur_sf_spec 
-					//|	restart_cur_proc_spec 
-					//|	reset_timer_spec 
-					//|	var_equation
+					|	if_statement
+					|	switch_statement
+					|	labeled_statement
+					|	loop_statement
+					|	state_transition
+					|	restart_statement
+					|	reset_statement
 					|	expression_statement
+					;
+
+restart_statement	:	TRESTART TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_RESTART_STATEMENT);
+							$1;$2;
+						}
+					;
+
+reset_statement		:	TRESET TTIMEOUT TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_RESET_STATEMENT);
+							$1;$2;$3;
+						}
+					;
+
+state_transition	:	TSET TSTATE state_id TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_STATE_TRANSITION);
+							$$->children.push_back($3);
+							$1;$2;$4;
+						}
+					|	TSET TNEXT TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_NEXT_STATEMENT);
+							$1;$2;$3;
+						}
 					;
 
 expression_statement:	expr TSEMIC
 						{
-							$$ = $1;
+							$$ = new ASTNode(ASTNODE_EXPRESSION_STATEMENT);
+							$$->children.push_back($1);
 							$2;
+						}
+					|	TSEMIC {$$ = new ASTNode(ASTNODE_EXPRESSION_STATEMENT);$1;}
+					;
+
+//						 1     2     3      4        5      6       7
+if_statement		:	TIF TLPAREN expr TRPAREN statement TELSE statement
+						{
+							$$ = new ASTNode(ASTNODE_IF_STATEMENT);
+							$$->children.push_back($3);
+							$$->children.push_back($5);
+							$$->children.push_back($7);
+							$1;$2;$4;$6;
+						}
+					|	TIF TLPAREN expr TRPAREN statement %prec XIF
+						{
+							$$ = new ASTNode(ASTNODE_IF_STATEMENT);
+							$$->children.push_back($3);
+							$$->children.push_back($5);
+							$1;$2;$4;
 						}
 					;
 
-//selection_statement	:	
+switch_statement	:	TSWITCH TLPAREN expr TRPAREN statement
+						{
+							$$ = new ASTNode(ASTNODE_SWITCH_STATEMENT);
+							$$->children.push_back($3);
+							$$->children.push_back($5);
+							$1;$2;$4;
+						}
+					;
+
+labeled_statement	:	TCASE expr TCOLON statement
+						{
+							$$ = new ASTNode(ASTNODE_CASE_STATEMENT);
+							$$->children.push_back($2);
+							$$->children.push_back($4);
+							$1;$3;
+						}
+					/*|	TDEFAULT TCOLON statement
+						{
+							$$ = new ASTNode(ASTNODE_DEFAULT_STATEMENT);
+							$$->children.push_back($3);
+							$1;$2;
+						}*/
+					;
+loop_statement		:	TLOOP TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_LOOP_STATEMENT);
+							$1;$2;
+						}
+					;
 
 compound_statement	:	TLBRACE statements_list TRBRACE
 						{
@@ -572,8 +748,9 @@ error_statement		:	TERROR proc_id TSEMIC
 						}
 					;
 
-
-//===================EXPRESSIONS===============================================
+//=============================================================================
+//                            EXPRESSIONS 
+//=============================================================================
 expr 		: assignment_expr 
 	 		;
 	 
@@ -623,6 +800,7 @@ postfix_expr	:	primary_expr
 
 						$$ = new ASTNode(ASTNODE_FUNCTION_CALL);
 						$$->children.push_back(func_id);
+						$2;$3;
 					}
 				|	TIDENTIFIER TLPAREN arg_expr_list TRPAREN // function call w/ arguments
 					{
@@ -649,7 +827,7 @@ arg_expr_list	:	arg_expr_list TCOMMA assignment_expr
 					{
 						$$ = $1;
 						$1->children.push_back($3);
-						$2;
+						delete $2;
 					}
 				|	assignment_expr
 					{
@@ -691,14 +869,42 @@ primary_expr	:	TICONST
 						$$->children.push_back($2);
 						$1;$3;
 					}
-				//|	TIDENTIFIER TACTIVE {$$ = NULL;} // reflex has more of those than IndustrialC
-				//|	TIDENTIFIER TINACTIVE {$$ = NULL;}
+				|	TPROC proc_id TIN TSTATE TSTOP
+					{
+						$$ = new ASTNode(ASTNODE_STOP_CHECK);
+						$$->children.push_back($2);
+						$1;$3;$4;$5;
+					}
+				|	TPROC proc_id TIN TSTATE TERROR
+					{
+						$$ = new ASTNode(ASTNODE_ERROR_CHECK);
+						$$->children.push_back($2);
+						$1;$3;$4;$5;
+					}
+				|	TPROC proc_id TIS TACTIVE
+					{
+						$$ = new ASTNode(ASTNODE_ACTIVE_CHECK);
+						$$->children.push_back($2);
+						$1;$3;$4;
+					}
+				|	TPROC proc_id TIS TINACTIVE
+					{
+						$$ = new ASTNode(ASTNODE_INACTIVE_CHECK);
+						$$->children.push_back($2);
+						$1;$3;$4;
+					}
 				;
 
 cast_expr		:	unary_expr 
 				|	TLPAREN c_type_spec TRPAREN cast_expr 
 				{
-					$$ = NULL;
+					ASTNode* c_type_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+					c_type_spec->val = $2;
+
+					$$ = new ASTNode(ASTNODE_CAST_EXPRESSION);
+					$$->children.push_back(c_type_spec);
+					$$->children.push_back($4); //cast_expr
+					$1;$3;
 				}
 		  		;
 
@@ -706,78 +912,242 @@ postfix_op		:	TINC | TDEC;
 binary_op		:	TLOR | TLAND | TOR | TXOR | TAND | TEQ | TNEQ | TLT | TGT | TLE | TGE | TLSHIFT | TRSHIFT | TPLUS | TMINUS | TMUL | TDIV | TPERC;
 unary_op		:	TINC | TDEC | TMINUS | TTILDE | TNOT;	   	
 assignement_op	:	TASSGN | TR_ASSGN | TL_ASSGN | TPLUS_ASSGN | TMINUS_ASSGN | TSTAR_ASSGN | TDIV_ASSGN | TPERC_ASSGN | TAND_ASSGN | TXOR_ASSGN | TOR_ASSGN;
-c_type_spec		:	TVOID | TFLOAT | TDOUBLE | TSIGNED | TUNSIGNED | TSHORT | TINT | TLONG;
+
+c_type_spec		:	TBOOL | TVOID |	TFLOAT | TDOUBLE 
+				|	singness_spec size_spec {$$ = new std::string(*$1 + *$2);delete $1;delete $2;}
+				|	size_spec 
+				;
+singness_spec	:	TSIGNED | TUNSIGNED ;
+size_spec		:	TSHORT | TINT | TLONG ;
+//int_type_spec	:	TBOOL | TSHORT | TINT | TLONG;
+
+//=============================================================================
+//                   VAR DECLARATIONS AND DEFINITIONS  
 //=============================================================================
 
 
+var_def				:	phys_var_def scope_spec TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_VAR_DEF);
+							$$->children.push_back($1);
+							$$->children.push_back($2);
+							$3;
+						}
+					|	calc_var_def scope_spec TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_VAR_DEF);
+							$$->children.push_back($1);
+							$$->children.push_back($2);
+							$3;
+						}
+					;
 
-//var_spec			:	(phys_var_spec | calc_var_spec), visibility_spec, TSEMIC;
-//phys_var_spec		:	int_type_spec, var_id, TEQ, TLBRACE, reg_bits_spec_list, TRBRACE; 
-//reg_bits_spec_list	:	reg_bits_spec | (reg_bits_spec, TCOMMA, reg_bits_spec_list);
-//reg_bits_spec		:	reg_id, TLBRACKET, int_num, TRBRACKET; 
-//calc_var_spec		:	(c_type_spec | TBOOL), var_id; 
-//visibility_spec		:	TLOCAL | (TFOR, TALL) | (TFOR, proc_id_list);
-//proc_id_list		:	proc_id | (proc_id, TCOMMA , proc_id_list);
+//						       1      2     3     4           5             6
+phys_var_def		:	c_type_spec var_id TASSGN TLBRACE reg_bits_spec_list TRBRACE
+						{
+							ASTNode* int_type_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+							int_type_spec->val = $1;
 
-//var_decl			:	TFROM, TPROC, proc_id, var_id_list, TSEMIC;
-//var_id_list			:	var_id | (var_id, TCOMMA, var_id_list);
+							$$ = new ASTNode(ASTNODE_PHYS_VAR_DEF);
+							$$->children.push_back(int_type_spec);
+							$$->children.push_back($2);
+							$$->children.push_back($5);
+							delete $3;
+							$4;$6;
+						}
+					;
 
+var_id				:	TIDENTIFIER
+						{
+							$$ = new ASTNode(ASTNODE_IDENTIFIER);
+							$$->val = $1;
+						}
+					;
 
-/*
+reg_id				:	TIDENTIFIER
+						{
+							$$ = new ASTNode(ASTNODE_IDENTIFIER);
+							$$->val = $1;
+						}
+					;
 
-function_decl		:	c_type_spec, func_id, TLPAREN, c_type_spec_list, TRPAREN, TSEMIC; 
-c_type_spec_list	:	c_type_spec | (c_type_spec, TCOMMA, c_type_spec_list);
-func_id				:	TIDENTIFIER;
+reg_bits_spec_list	:	reg_bits_spec_list TCOMMA reg_bits_spec
+						{
+							$$ = $1;
+							$1->children.push_back($3);
+							delete $2;
+						}
+					|	reg_bits_spec
+						{
+							$$ = new ASTNode(ASTNODE_REG_BITS_SPEC_LIST);
+							$$->children.push_back($1);
+						}
+					;
 
-register_spec		:	(TINPUT | TOUTPUT), reg_id, addr_1, addr_2, register_size; 
-addr_1				:	int_num;
-addr_2				:	int_num;
-register_size		:	"8" | "16";
-reg_id				:	TIDENTIFIER;
+reg_bits_spec		:	reg_id TLBRACKET TICONST TRBRACKET
+						{
+							ASTNode* reg_index = new ASTNode(ASTNODE_ICONST);
+							reg_index->val = $3;
 
-react_spec			:	TSEMIC | (TLBRACE, func_state_body, TRBRACE) | switch_spec | event_react_spec | start_spec | stop_spec | error_spec | loop_decl | set_cur_sf_spec | restart_cur_proc_spec | reset_timer_spec | var_equation;
+							$$ = new ASTNode(ASTNODE_REG_BITS_SPEC);
+							$$->children.push_back($1);
+							$$->children.push_back(reg_index);
+							$2;$4;
+						}
+					;
 
-switch_spec			:	TSWITCH, TLPAREN, event, TRPAREN, TLBRACE, {case_spec}, TRBRACE;
-case_spec			:	TCASE, int_num, TCOLON, func_state_body, [TBREAK, TSEMIC];
+calc_var_def		:	c_type_spec var_id 
+						{
+							ASTNode* c_type_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+							c_type_spec->val = $1;
 
-event_react_spec	:	event_react_body, [rev_event_react_body];
-event_react_body	:	TIF, TLPAREN, event, TRPAREN, react_spec;
+							$$ = new ASTNode(ASTNODE_CALC_VAR_DEF);
+							$$->children.push_back(c_type_spec);
+							$$->children.push_back($2);
+						}
+					/*|	TBOOL var_id
+						{
+							ASTNode* bool_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+							bool_spec->val = $1;
 
-rev_event_react_body:	TELSE, react_spec;
+							$$ = new ASTNode(ASTNODE_CALC_VAR_DEF);
+							$$->children.push_back(bool_spec);
+							$$->children.push_back($2);
+						}*/
+					;
 
-start_spec			:	TSTART, proc_id, TSEMIC;
-stop_spec			:	TSTOP, [proc_id], TSEMIC;
-error_spec			:	TERROR, [proc_id], TSEMIC;
-loop_decl			:	TLOOP, TSEMIC;
-set_cur_sf_spec		:	TSET, (TSTATE, func_state_id) | TNEXT, TSEMIC;
-restart_cur_proc_spec:	TRESTART, TSEMIC;
-reset_timer_spec	:	TRESET, TTIMEOUT, TSEMIC;
+scope_spec			:	TLOCAL 
+						{
+							$$ = new ASTNode(ASTNODE_SCOPE_SPEC);
+							$$->val = $1;
+						}
+					|	TFOR TALL 
+						{
+							$$=new ASTNode(ASTNODE_SCOPE_SPEC);
+							$$->val = new std::string(*$1 + *$2);
+							delete $1;
+							delete $2;
+						}
+					|	TFOR proc_id_list 
+						{
+							$$ = new ASTNode(ASTNODE_SCOPE_SPEC);
+							$$->children.push_back($2);
+							delete $1;
+						}
+					;
 
-var_equation		:	var_id, TASSGN, event, TSEMIC);
+proc_id_list		:	proc_id_list TCOMMA proc_id
+						{
+							$$ = $1;
+							$1->children.push_back($3);
+							delete $2;
+						}
+					|	proc_id
+						{
+							$$ = new ASTNode(ASTNODE_PROC_ID_LIST);
+							$$->children.push_back($1);
+						}
+					;
 
-event				:	var_pref_post_term | var_pref_post_term, {var_infix, var_pref_post_term};
-var_pref_post_term	:	var_prefix, term, [var_postfix];
-var_prefix			:	[(TTILDA | TNOT | TINC | TDEC | TPLUS | TMINUS | TMUL | TAND)], [TLPAREN, c_type_spec,TRPAREN];
-var_postfix			:	TINC | TDEC;
-var_infix			:	TPLUS | TMINUS | TMUL | TDIV | TPERC | TLSHIFT | TRSHIFT | TAND | TXOR | TOR | TLAND | TLOR | TASSGN | TSTAR_ASSGN | TDIV_ASSGN | TPERC_ASSGN | TPLUS_ASSGN | TMINUS_ASSGN | TLASSGN, | TR_ASSGN | TAND_ASSGN | TXOR_ASSGN | TOR_ASSGN | TLT | TGT | TLEQ | TGEQ | TEQ | TNEQ; 
-term				:	number | const_id | var_id | function | situation | TLPAREN, event, TRPAREN;
-function			:	func_id, TLPAREN, func_param_list, TRPAREN; 
-func_param_list		:	event | (event, {TCOMMA, event});
+var_decl			:	TFROM TPROC proc_id var_id_list TSEMIC
+						{
+							$$ = new ASTNode(ASTNODE_VAR_DECL);
+							$$->children.push_back($3);
+							$$->children.push_back($4);
+							$1;$2;$5;
+						}
+					;
 
-situation			:	TPROC, proc_id, ((TIN, TSTATE, (TSTOP | TERROR)) | (TIS, (TACTIVE | TINACTIVE)));
+var_id_list			:	var_id_list TCOMMA var_id
+						{
+							$$ = $1;
+							$1->children.push_back($3);
+							delete $2;
+						}
+					|	var_id
+						{
+							$$ = new ASTNode(ASTNODE_VAR_ID_LIST);
+							$$->children.push_back($1);
+						}
 
-var_id				:	TIDENTIFIER;
+//						  1      2       3        4        5            6
+register_def		:	TINPUT reg_id reg_addr reg_addr register_size TSEMIC
+						{
+							ASTNode* dir_spec = new ASTNode(ASTNODE_DIR_SPEC);
+							dir_spec->val = $1;
 
-c_type_spec			:	TVOID | TFLOAT | TDOUBLE | TSIGNED | TUNSIGNED | TSHORT | TINT | TLONG;
-int_type_spec		:	TBOOL | TSHORT | TINT | TLONG;
-*/
+							$$ = new ASTNode(ASTNODE_REGISTER_DEF);
+							$$->children.push_back(dir_spec);
+							$$->children.push_back($2);
+							$$->children.push_back($3);
+							$$->children.push_back($4);
+							$$->children.push_back($5);
+							$6;
+						}
+					|	TOUTPUT reg_id reg_addr reg_addr register_size TSEMIC
+						{
+							ASTNode* dir_spec = new ASTNode(ASTNODE_DIR_SPEC);
+							dir_spec->val = $1;
+
+							$$ = new ASTNode(ASTNODE_REGISTER_DEF);
+							$$->children.push_back(dir_spec);
+							$$->children.push_back($2);
+							$$->children.push_back($3);
+							$$->children.push_back($4);
+							$$->children.push_back($5);
+							$6;
+						}
+					;
+
+reg_addr			:	TICONST {$$ = new ASTNode(ASTNODE_REG_ADDR);$$->val=$1;};
+register_size		:	TICONST {$$ = new ASTNode(ASTNODE_REG_SIZE);$$->val=$1;}
+
+//						     1          2      3         4              5      6
+func_decl			:	c_type_spec func_id TLPAREN c_type_spec_list TRPAREN TSEMIC
+						{
+							ASTNode* c_type_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+							c_type_spec->val = $1;
+
+							$$ = new ASTNode(ASTNODE_FUNC_DECL);
+							$$->children.push_back(c_type_spec);
+							$$->children.push_back($2);
+							$$->children.push_back($4);
+							$3;$5;$6;
+						}
+					;
+
+func_id				:	TIDENTIFIER
+						{
+							$$ = new ASTNode(ASTNODE_IDENTIFIER);
+							$$->val = $1;
+						}
+					;
+
+c_type_spec_list	:	c_type_spec_list TCOMMA c_type_spec
+						{
+							ASTNode* c_type_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+							c_type_spec->val = $3;
+
+							$$ = $1;
+							$1->children.push_back(c_type_spec);
+							delete $2;
+						}
+					|	c_type_spec
+						{
+							ASTNode* c_type_spec = new ASTNode(ASTNODE_TYPE_SPEC);
+							c_type_spec->val = $1;
+
+							$$ = new ASTNode(ASTNODE_TYPE_SPEC_LIST);
+							$$->children.push_back(c_type_spec);
+						}
+					;
 
 %%
 
 int yyerror(const char *s) 
 {
 	//parser_context->err_msg(s);
-	std::cout<<s<<std::endl;
+	std::cout<<line_num<<": "<<s<<std::endl;
 	return 0;
 }
 

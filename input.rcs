@@ -1,26 +1,30 @@
-PROGR blah
-{
-	TACT 777;
-	
-	CONST habalaha -3+5*7-2+5/1%2||1&10;
-	CONST wewe 123.4567;
-	
-	PROC asdfgwrthb 
-	{
-		STATE Start
-		{
-			{{{{{}}};{}}{}{}}
-			;;;;;;
-			TIMEOUT 5 ;		
-		}
-		STATE Start
-		{
-			a;	
-		}
-	}
-	
-	PROC asdfgwrthb 
-	{
-		STATE s {;}
-	}
-}
+PROGR HandDryerController {
+  TACT 100;
+  CONST ON 1;
+  CONST OFF 0;
+
+  INPUT  SENSOR_PORT  0 0 8; 
+  OUTPUT ACTUATOR_PORT 1 0 8; 
+
+  PROC Init {
+
+    BOOL I_HANDS = 
+      {SENSOR_PORT[1]} FOR ALL;
+    BOOL O_DRYER = 
+      {ACTUATOR_PORT[1]} FOR ALL;
+		
+
+    STATE Waiting {
+      IF (I_HANDS == ON) {
+        O_DRYER = ON;
+        SET NEXT;
+      } ELSE O_DRYER = OFF;
+    }
+    STATE Drying {
+      IF (I_HANDS == ON) 
+        RESET TIMEOUT;
+        TIMEOUT 10 
+          SET STATE Waiting; 
+    }
+  } 
+}  
