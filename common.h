@@ -104,7 +104,7 @@ const char* const AST_NODE_NAMES[NUM_AST_NODE_TYPES] =
 	"state_def",
 	"state_id",
 	"statements_list",
-	"timeout",
+	"timeout_statement",
 	//"empty_statement",
 	"compound_statement",
 	"start_statement",

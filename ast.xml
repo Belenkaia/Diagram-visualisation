@@ -50,7 +50,7 @@
 						</reg_bits_spec>
 					</reg_bits_spec_list>
 				</phys_var_def>
-				<scope_spec>FORALL</scope_spec>
+				<scope_spec>FOR ALL</scope_spec>
 			</var_def>
 			<var_def>
 				<phys_var_def>
@@ -63,7 +63,7 @@
 						</reg_bits_spec>
 					</reg_bits_spec_list>
 				</phys_var_def>
-				<scope_spec>FORALL</scope_spec>
+				<scope_spec>FOR ALL</scope_spec>
 			</var_def>
 		</var_list>
 		<state_def>
@@ -125,12 +125,12 @@
 					<reset_statement></reset_statement>
 				</if_statement>
 			</statements_list>
-			<timeout>
+			<timeout_statement>
 				<int_constant>10</int_constant>
 				<state_transition>
 					<state_id>Waiting</state_id>
 				</state_transition>
-			</timeout>
+			</timeout_statement>
 		</state_def>
 	</proc_def>
 </program>

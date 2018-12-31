@@ -18,6 +18,8 @@ IS			(u|U|l|L)*
 
 %option noyywrap
 
+%x C_COMMENT
+
 %%
 
 " "+					;
@@ -121,6 +123,13 @@ IS			(u|U|l|L)*
 "&="					{SAVE_TOKEN; return TAND_ASSGN	;}
 "^="					{SAVE_TOKEN; return TXOR_ASSGN	;}
 "|="					{SAVE_TOKEN; return TOR_ASSGN	;}
+
+
+
+"/*"            { BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" { BEGIN(INITIAL); }
+<C_COMMENT>\n   { line_num++; }
+<C_COMMENT>.    { }
 										   
 .                       printf("Unknown token \n"); yyterminate();
 										   

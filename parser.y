@@ -66,7 +66,7 @@
 %token <string> TUNSIGNED		"UNSIGNED"	
 %token <string> TSHORT			"SHORT"	
 %token <string> TLONG			"LONG"		
-%token <string> TINT				"INT"		
+%token <string> TINT			"INT"		
 
 %token <string> TIDENTIFIER		"identifier"
 %token <string> TFCONST			"floating-point constant"
@@ -913,8 +913,9 @@ binary_op		:	TLOR | TLAND | TOR | TXOR | TAND | TEQ | TNEQ | TLT | TGT | TLE | T
 unary_op		:	TINC | TDEC | TMINUS | TTILDE | TNOT;	   	
 assignement_op	:	TASSGN | TR_ASSGN | TL_ASSGN | TPLUS_ASSGN | TMINUS_ASSGN | TSTAR_ASSGN | TDIV_ASSGN | TPERC_ASSGN | TAND_ASSGN | TXOR_ASSGN | TOR_ASSGN;
 
+//should use c_type_spec_list instead of concatination here
 c_type_spec		:	TBOOL | TVOID |	TFLOAT | TDOUBLE 
-				|	singness_spec size_spec {$$ = new std::string(*$1 + *$2);delete $1;delete $2;}
+				|	singness_spec size_spec {$$ = new std::string(*$1 + " " + *$2);delete $1;delete $2;}
 				|	size_spec 
 				;
 singness_spec	:	TSIGNED | TUNSIGNED ;
@@ -1024,7 +1025,7 @@ scope_spec			:	TLOCAL
 					|	TFOR TALL 
 						{
 							$$=new ASTNode(ASTNODE_SCOPE_SPEC);
-							$$->val = new std::string(*$1 + *$2);
+							$$->val = new std::string(*$1 + " " + *$2);
 							delete $1;
 							delete $2;
 						}
