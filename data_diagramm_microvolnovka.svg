@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="data_diagramm_microvolnovka.svg">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="marker22637"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path22635"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker22505"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:collect="always">
+      <path
+         transform="scale(1.1) rotate(180) translate(1,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         id="path22503" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="marker22313"
+       style="overflow:visible;"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path22311"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker22235"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:collect="always">
+      <path
+         transform="scale(1.1) rotate(180) translate(1,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         id="path22233" />
+    </marker>
+    <marker
+       inkscape:stockid="EmptyTriangleOutL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="EmptyTriangleOutL"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path20687"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;fill:#ffffff;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8) translate(-6,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path20548"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path20530"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path20545"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-2"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path20548-2"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-4"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path20548-6"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-5"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path20548-4"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-5-9"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path20548-4-4"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.2374369"
+     inkscape:cx="519.56358"
+     inkscape:cy="803.71585"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1018"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:snap-others="true"
+     inkscape:object-nodes="false"
+     inkscape:snap-nodes="true" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g19893" />
+    <g
+       id="g20474">
+      <g
+         transform="translate(-87.233911,-100.85602)"
+         id="g20451">
+        <g
+           id="g20139"
+           transform="matrix(0.83934133,0,0,0.68662758,61.935878,99.594494)">
+          <rect
+             ry="10.414134"
+             y="6.3084283"
+             x="73.225754"
+             height="89.677254"
+             width="99.53241"
+             id="rect18975-7"
+             style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.5084607;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g20443">
+            <rect
+               style="fill:none;stroke-width:0.26458332"
+               id="rect15817"
+               width="3.0961878"
+               height="0.56294328"
+               x="92.930229"
+               y="78.003914"
+               ry="0.28147164" />
+            <rect
+               style="fill:none;stroke-width:0.26458332"
+               id="rect19867"
+               width="65.490921"
+               height="61.823429"
+               x="86.709984"
+               y="32.416664"
+               ry="9.1687384" />
+            <path
+               style="fill:none;stroke:#000000;stroke-width:0.57168895;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               d="M 73.487714,20.6871 H 172.57171"
+               id="path19889-8"
+               inkscape:connector-curvature="0" />
+          </g>
+        </g>
+      </g>
+      <text
+         transform="scale(0.86253965,1.159367)"
+         id="text20082"
+         y="8.7486515"
+         x="74.139923"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58514214px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.24563259"
+         xml:space="preserve"><tspan
+           style="font-size:4.58514214px;stroke-width:0.24563259"
+           y="8.7486515"
+           x="74.139923"
+           id="tspan20080"
+           sodipodi:role="line">Инициализация</tspan></text>
+      <text
+         transform="scale(0.9999047,1.0000953)"
+         id="text20086"
+         y="18.82486"
+         x="39.726887"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17389941px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.17003033"
+         xml:space="preserve"><tspan
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="18.82486"
+           x="39.726887"
+           id="tspan20084"
+           sodipodi:role="line">/* ВХОДНЫЕ СИГНАЛЫ: */</tspan><tspan
+           id="tspan20088"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="22.792234"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ К_КНОПКА_ПУСКА</tspan><tspan
+           id="tspan20090"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="26.759609"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ К_ДВЕРЦА</tspan><tspan
+           id="tspan20092"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="30.726984"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ К_КНОПКА_ИЗМЕНИТЬ_ВРЕМЯ </tspan><tspan
+           id="tspan20094"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="34.694359"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ К_КНОПКА_ЧАС</tspan><tspan
+           id="tspan20104"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="38.661732"
+           x="39.726887"
+           sodipodi:role="line" /><tspan
+           id="tspan20106"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="42.629108"
+           x="39.726887"
+           sodipodi:role="line">/* ВЫХОДНЫЕ СИГНАЛЫ */</tspan><tspan
+           id="tspan20108"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="46.596481"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ У_РАЗОГРЕВ</tspan><tspan
+           id="tspan20110"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="50.563858"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ У_ЛАМПА </tspan><tspan
+           id="tspan20112"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="54.531231"
+           x="39.726887"
+           sodipodi:role="line">	ЛОГ У_ЗВОНОК </tspan><tspan
+           id="tspan20114"
+           style="font-size:3.17389989px;stroke-width:0.17003033"
+           y="58.498608"
+           x="39.726887"
+           sodipodi:role="line">	ДЦЕЛ ВремяГотовки</tspan></text>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot20096"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       transform="scale(0.26458333)"><flowRegion
+         id="flowRegion20098"><rect
+           id="rect20100"
+           width="169.30693"
+           height="84.158417"
+           x="308.91089"
+           y="97.767212" /></flowRegion><flowPara
+         id="flowPara20102"></flowPara></flowRoot>    <g
+       id="g20200"
+       transform="matrix(0.79047622,0,0,0.75242568,98.53682,-68.482728)">
+      <g
+         transform="matrix(1.2789327,0,0,0.85111677,-35.05892,19.723442)"
+         id="g20178">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-4"
+           width="58.155983"
+           height="40.60437"
+           x="71.254105"
+           y="90.179672"
+           ry="4.7153468" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 71.254103,100.92018 H 129.14807"
+           id="path19889-8-3"
+           inkscape:connector-curvature="0" />
+        <rect
+           ry="4.7153468"
+           y="90.179672"
+           x="71.254105"
+           height="40.60437"
+           width="58.155983"
+           id="rect20164"
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path20166"
+           d="M 71.254103,100.92018 H 129.14808"
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <text
+         id="text20182"
+         y="101.83705"
+         x="69.944313"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="101.83705"
+           x="69.944313"
+           id="tspan20180"
+           sodipodi:role="line">КонтрольКнопкиПуска</tspan></text>
+      <text
+         transform="scale(1.0339554,0.9671597)"
+         id="text20186"
+         y="115.35825"
+         x="58.026726"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.96805716px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.21257448"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.21257448"
+           y="115.35825"
+           x="58.026726"
+           id="tspan20184"
+           sodipodi:role="line">ЛОГ К_КНОПКА_ПУСКА</tspan><tspan
+           id="tspan20188"
+           style="stroke-width:0.21257448"
+           y="120.31832"
+           x="58.026726"
+           sodipodi:role="line">ДЦЕЛ ВремяГотовки</tspan></text>
+    </g>
+    <g
+       id="g20232"
+       transform="matrix(0.76312635,0,0,0.77041297,97.447366,-53.263218)">
+      <g
+         id="g20206">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-7"
+           width="58.155983"
+           height="40.60437"
+           x="59.20377"
+           y="116.63799"
+           ry="4.7153468" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 59.203773,126.98556 H 117.09774"
+           id="path19889-8-8"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text20210"
+         y="122.79414"
+         x="78.065186"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="122.79414"
+           x="78.065186"
+           id="tspan20208"
+           sodipodi:role="line">Разогрев</tspan></text>
+      <text
+         transform="scale(0.9946203,1.0054088)"
+         id="text20214"
+         y="131.91496"
+         x="63.743507"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.350914px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23308468"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.23308468"
+           y="131.91496"
+           x="63.743507"
+           id="tspan20212"
+           sodipodi:role="line">ЛОГ К_ДВЕРЦА</tspan><tspan
+           id="tspan20216"
+           style="stroke-width:0.23308468"
+           y="137.35361"
+           x="63.743507"
+           sodipodi:role="line">ЛОГ У_ЗВОНОК</tspan><tspan
+           id="tspan20218"
+           style="stroke-width:0.23308468"
+           y="142.79225"
+           x="63.743507"
+           sodipodi:role="line">ЛОГ У_РАЗОГРЕВ</tspan><tspan
+           id="tspan20220"
+           style="stroke-width:0.23308468"
+           y="148.2309"
+           x="63.743507"
+           sodipodi:role="line">ДЦЕЛ ВремяГотовки</tspan></text>
+    </g>
+    <g
+       id="g20301"
+       transform="matrix(0.79150314,0,0,0.80435992,20.900353,-2.9407693)">
+      <g
+         transform="matrix(1.0504465,0,0,0.74955079,-3.0919973,24.858101)"
+         id="g20278">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-0"
+           width="58.155983"
+           height="40.60437"
+           x="60.775555"
+           y="99.348389"
+           ry="4.7153468" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 60.775555,109.17203 H 118.66953"
+           id="path19889-8-71"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text20282"
+         y="104.98062"
+         x="66.014854"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="104.98062"
+           x="66.014854"
+           id="tspan20280"
+           sodipodi:role="line">СветоваяСигнализация</tspan></text>
+      <text
+         transform="scale(1.0307465,0.97017065)"
+         id="text20286"
+         y="116.20222"
+         x="63.034843"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.13578939px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22156017"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.22156017"
+           y="116.20222"
+           x="63.034843"
+           id="tspan20284"
+           sodipodi:role="line">ЛОГ К_ДВЕРЦА</tspan><tspan
+           id="tspan20288"
+           style="stroke-width:0.22156017"
+           y="121.37196"
+           x="63.034843"
+           sodipodi:role="line">ЛОГ У_РАЗОГРЕВ</tspan><tspan
+           id="tspan20290"
+           style="stroke-width:0.22156017"
+           y="126.54169"
+           x="63.034843"
+           sodipodi:role="line">ЛОГ У_ЛАМПА</tspan></text>
+    </g>
+    <g
+       id="g20387"
+       transform="translate(-62.500744,-60.431213)">
+      <g
+         transform="matrix(0.83143169,0,0,0.60290861,25.101081,77.376077)"
+         id="g20278-8">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-0-6"
+           width="58.155983"
+           height="40.60437"
+           x="60.775555"
+           y="99.348389"
+           ry="4.7153468" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 60.775555,109.17203 H 118.66953"
+           id="path19889-8-71-0"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         transform="scale(0.99197587,1.008089)"
+         id="text20282-1"
+         y="140.42555"
+         x="86.518776"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.94076705px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.21111251"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.21111251"
+           y="140.42555"
+           x="86.518776"
+           id="tspan20280-4"
+           sodipodi:role="line">РаботаСДисплеем</tspan></text>
+      <text
+         transform="scale(1.0224757,0.97801838)"
+         id="text20286-7"
+         y="150.85359"
+         x="77.751122"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.29996967px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.1767841"
+         xml:space="preserve"><tspan
+           id="tspan20290-8"
+           style="stroke-width:0.1767841"
+           y="150.85359"
+           x="77.751122"
+           sodipodi:role="line">ДЦЕЛ ВременноеТабло</tspan><tspan
+           id="tspan20374"
+           style="stroke-width:0.1767841"
+           y="154.97856"
+           x="77.751122"
+           sodipodi:role="line">ДЦЕЛ Время</tspan><tspan
+           id="tspan20376"
+           style="stroke-width:0.1767841"
+           y="159.10352"
+           x="77.751122"
+           sodipodi:role="line">ДЦЕЛ ВремяГотовки</tspan></text>
+    </g>
+    <g
+       id="g20419"
+       transform="matrix(0.73418435,0,0,0.76020256,-33.225877,6.3611434)">
+      <g
+         transform="matrix(1.821831,0,0,1.2121962,-54.504312,-35.450132)"
+         id="g20399">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.32228947;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-8"
+           width="47.292854"
+           height="23.98601"
+           x="62.277664"
+           y="146.42821"
+           ry="2.7854724" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.39159903;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 62.277663,153.49249 H 109.35746"
+           id="path19889-8-7"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text20403"
+         y="148.4666"
+         x="69.420372"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="148.4666"
+           x="69.420372"
+           id="tspan20401"
+           sodipodi:role="line">КонтрольКнопкиИзменитьВремя</tspan></text>
+      <text
+         transform="scale(0.97935119,1.0210842)"
+         id="text20407"
+         y="154.22069"
+         x="63.398346"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.59577608px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.24620229"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.24620229"
+           y="154.22069"
+           x="63.398346"
+           id="tspan20405"
+           sodipodi:role="line">ДЦЕЛ Время</tspan><tspan
+           id="tspan20409"
+           style="stroke-width:0.24620229"
+           y="159.96541"
+           x="63.398346"
+           sodipodi:role="line">ЛОГ К_КНОПКА_ИЗМЕНИТЬ_ВРЕМЯ</tspan></text>
+    </g>
+    <g
+       id="g20491"
+       transform="matrix(0.73663533,0,0,0.74065879,-13.345336,22.481993)">
+      <g
+         id="g19893-5-6"
+         transform="matrix(0.67871743,0,0,0.56564653,71.64207,152.44743)">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-5"
+           width="58.155983"
+           height="40.60437"
+           x="69.158417"
+           y="14.34117"
+           ry="4.7153468" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 69.158415,29.273103 H 127.05239"
+           id="path19889-8-2"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text20478"
+         y="166.28012"
+         x="132.81558"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="166.28012"
+           x="132.81558"
+           id="tspan20476"
+           sodipodi:role="line">Часы</tspan></text>
+      <text
+         id="text20482"
+         y="174.13902"
+         x="121.02723"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="174.13902"
+           x="121.02723"
+           id="tspan20480"
+           sodipodi:role="line">ДЦЕЛ Время</tspan></text>
+    </g>
+    <g
+       id="g20517"
+       transform="matrix(0.76264164,0,0,0.7629015,54.207721,-66.428399)">
+      <g
+         transform="matrix(1.0731485,0,0,0.67255975,-2.1956844,84.416668)"
+         id="g20497">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#010101;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect18975-7-49"
+           width="58.155983"
+           height="40.60437"
+           x="72.563919"
+           y="224.30508"
+           ry="4.7153468" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 72.563921,237.53425 H 130.4579"
+           id="path19889-8-0"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text20501"
+         y="241.72566"
+         x="85.662125"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="241.72566"
+           x="85.662125"
+           id="tspan20499"
+           sodipodi:role="line">КонтрольКнопкиЧас</tspan></text>
+      <text
+         transform="scale(0.99385775,1.0061802)"
+         id="text20505"
+         y="248.49126"
+         x="80.130753"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.78620148px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.25640365"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.25640365"
+           y="248.49126"
+           x="80.130753"
+           id="tspan20503"
+           sodipodi:role="line">ДЦЕЛ Время</tspan><tspan
+           id="tspan20507"
+           style="stroke-width:0.25640365"
+           y="254.47401"
+           x="80.130753"
+           sodipodi:role="line">ЛОГ К_КНОПКА_ЧАС</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.45540488;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 46.69987,64.516904 V 76.075057"
+       id="path20525"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.45540488;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-2)"
+       d="M 99.799977,64.511494 V 76.069647"
+       id="path20525-4"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.47191522;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-4)"
+       d="m 40.460439,101.18165 v 12.41141"
+       id="path20525-44"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.472;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-5)"
+       d="m 119.58689,16.49973 22.2844,0.326872"
+       id="path20525-5"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.47200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-5-9)"
+       d="m 119.56304,50.275184 22.2844,0.326872"
+       id="path20525-5-0"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.465;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker22235)"
+       d="m 119.73675,58.595582 h 14.96709 V 112.2633"
+       id="path22225"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.465;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker22313)"
+       d="M 73.980204,151.17774 H 42.549308 v -14.11183"
+       id="path22303"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.46473059;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker22505)"
+       d="M 87.670538,141.33325 V 108.7477 H 54.327941 v -6.74913"
+       id="path22495"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.46516573;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker22637)"
+       d="m 103.00979,153.21176 h 30.09769 v -18.49737"
+       id="path22627"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
