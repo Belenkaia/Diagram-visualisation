@@ -25,7 +25,7 @@ graph
 			text	"&#x421;&#x432;&#x435;&#x442;&#x43e;&#x432;&#x430;&#x44f;&#x421;&#x438;&#x433;&#x43d;&#x430;&#x43b;&#x438;&#x437;&#x430;&#x446;&#x438;&#x44f;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -48,7 +48,7 @@ graph
 			text	"&#x418;&#x43d;&#x438;&#x446;&#x438;&#x430;&#x43b;&#x438;&#x437;&#x430;&#x446;&#x438;&#x44f;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -71,7 +71,7 @@ graph
 			text	"&#x420;&#x430;&#x431;&#x43e;&#x442;&#x430;&#x421;&#x414;&#x438;&#x441;&#x43f;&#x43b;&#x435;&#x435;&#x43c;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -94,7 +94,7 @@ graph
 			text	"&#x41a;&#x43e;&#x43d;&#x442;&#x440;&#x43e;&#x43b;&#x44c;&#x41a;&#x43d;&#x43e;&#x43f;&#x43a;&#x438;&#x418;&#x437;&#x43c;&#x435;&#x43d;&#x438;&#x442;&#x44c;&#x412;&#x440;&#x435;&#x43c;&#x44f;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -117,13 +117,13 @@ graph
 			text	"&#x427;&#x430;&#x441;&#x44b;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
 	[
 		id	5
-		label	"&#x420;&#x430;&#x431;&#x43e;&#x442;&#x430;&#x421;&#x414;&#x438;&#x441;&#x43f;&#x43b;&#x435;&#x435;&#x43c;"
+		label	"&#x41a;&#x43e;&#x43d;&#x442;&#x440;&#x43e;&#x43b;&#x44c;&#x41a;&#x43d;&#x43e;&#x43f;&#x43a;&#x438;&#x427;&#x430;&#x441;"
 		graphics
 		[
 			x	675.0
@@ -137,10 +137,10 @@ graph
 		]
 		LabelGraphics
 		[
-			text	"&#x420;&#x430;&#x431;&#x43e;&#x442;&#x430;&#x421;&#x414;&#x438;&#x441;&#x43f;&#x43b;&#x435;&#x435;&#x43c;"
+			text	"&#x41a;&#x43e;&#x43d;&#x442;&#x440;&#x43e;&#x43b;&#x44c;&#x41a;&#x43d;&#x43e;&#x43f;&#x43a;&#x438;&#x427;&#x430;&#x441;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -163,7 +163,7 @@ graph
 			text	"&#x41a;&#x43e;&#x43d;&#x442;&#x440;&#x43e;&#x43b;&#x44c;&#x41a;&#x43d;&#x43e;&#x43f;&#x43a;&#x438;&#x41f;&#x443;&#x441;&#x43a;&#x430;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -186,7 +186,7 @@ graph
 			text	"&#x420;&#x430;&#x437;&#x43e;&#x433;&#x440;&#x435;&#x432;"
 			fontSize	12
 			fontName	"Dialog"
-			model	"null"
+			anchor	"c"
 		]
 	]
 	node
@@ -297,8 +297,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 	edge
@@ -346,8 +346,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 	edge
@@ -391,8 +391,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 	edge
@@ -435,8 +435,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 	edge
@@ -484,8 +484,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 	edge
@@ -534,8 +534,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 	edge
@@ -561,8 +561,8 @@ graph
 			configuration	"AutoFlippingLabel"
 			contentWidth	43.333984375
 			contentHeight	18.701171875
-			model	"null"
-			position	"null"
+			model	"six_pos"
+			position	"tail"
 		]
 	]
 ]
