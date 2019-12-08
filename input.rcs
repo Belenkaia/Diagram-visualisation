@@ -1,0 +1,37 @@
+ PROGR HandDryerController {
+      TACT 100;
+      CONST ON 1;
+      CONST OFF 0;
+    /*=============================*/
+    /* I/O ports specification     */
+    /* direction, name, address,   */
+    /* offset, size of the port    */
+    /*=============================*/
+      INPUT  SENSOR_PORT  0 0 8; 
+      OUTPUT ACTUATOR_PORT 1 0 8; 
+    
+    /*=============================*/
+    /* processes definition        */
+    /*=============================*/
+      PROC Init {
+    /*===== VARIABLES =============*/
+        BOOL I_HANDS = 
+          {SENSOR_PORT[1]} FOR ALL;
+        BOOL O_DRYER = 
+          {ACTUATOR_PORT[1]} FOR ALL;
+    		
+    /*===== STATES ================*/
+        STATE Waiting {
+          IF (I_HANDS == ON) {
+            O_DRYER = ON;
+            SET NEXT;
+          } ELSE O_DRYER = OFF;
+        }
+        STATE Drying {
+          IF (I_HANDS == ON) 
+            RESET TIMEOUT;
+            TIMEOUT 10 
+              SET STATE Waiting; 
+        }
+      } /* \PROC */
+    }  /* \PROGRAM */
