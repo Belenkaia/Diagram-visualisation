@@ -34,4 +34,25 @@
               SET STATE Waiting; 
         }
       } /* \PROC */
+      PROC Init2 {
+    /*===== VARIABLES =============*/
+        BOOL I_HANDS = 
+          {SENSOR_PORT[1]} FOR ALL;
+        BOOL O_DRYER = 
+          {ACTUATOR_PORT[1]} FOR ALL;
+    		
+    /*===== STATES ================*/
+        STATE Waiting {
+          IF (I_HANDS == ON) {
+            O_DRYER = ON;
+            SET NEXT;
+          } ELSE O_DRYER = OFF;
+        }
+        STATE Drying {
+          IF (I_HANDS == ON) 
+            RESET TIMEOUT;
+            TIMEOUT 10 
+              SET STATE Waiting; 
+        }
+      } /* \PROC */
     }  /* \PROGRAM */

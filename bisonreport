@@ -1,0 +1,4957 @@
+Terminals unused in grammar
+
+    "BREAK"
+    "."
+    "?"
+    UMINUS
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: "PROGR" "identifier" "left brace" tact program_body proc_def_list "right brace"
+
+    2 program_body: %empty
+    3             | const_enum_list func_decl_list register_def_list
+    4             | const_enum_list func_decl_list
+    5             | const_enum_list register_def_list
+    6             | func_decl_list register_def_list
+    7             | const_enum_list
+    8             | func_decl_list
+    9             | register_def_list
+
+   10 tact: "TACT" "integer constant" "semicolon"
+
+   11 const_enum_list: const_enum_list const_or_enum_spec
+   12                | const_or_enum_spec
+
+   13 const_or_enum_spec: const_spec
+   14                   | enum_def
+
+   15 const_spec: "CONST" const_id const_exp_body "semicolon"
+
+   16 const_id: "identifier"
+
+   17 const_exp_body: const_pref_term
+   18               | const_pref_term infix_term_list
+
+   19 infix_term_list: infix_term_list const_infix const_pref_term
+   20                | const_infix const_pref_term
+
+   21 const_pref_term: const_prefix const_term
+   22                | const_term
+
+   23 const_prefix: "~"
+   24             | "!"
+   25             | "+"
+   26             | "-"
+
+   27 const_infix: "+"
+   28            | "-"
+   29            | "*"
+   30            | "/"
+   31            | "%"
+   32            | "<<"
+   33            | ">>"
+   34            | "&"
+   35            | "^"
+   36            | "|"
+   37            | "&&"
+   38            | "||"
+
+   39 const_term: "integer constant"
+   40           | "floating-point constant"
+   41           | const_id
+
+   42 enum_def: "ENUM" "left brace" enum_list "right brace"
+
+   43 enum_list: enum_list "comma" enumerator
+   44          | enumerator
+
+   45 enumerator: const_id
+   46           | const_id "=" const_exp_body
+
+   47 func_decl_list: func_decl_list func_decl
+   48               | func_decl
+
+   49 register_def_list: register_def_list register_def
+   50                  | register_def
+
+   51 proc_def_list: proc_def
+   52              | proc_def_list proc_def
+
+   53 proc_def: "PROC" proc_id "left brace" var_list state_def_list "right brace"
+   54         | "PROC" proc_id "left brace" state_def_list "right brace"
+
+   55 proc_id: "identifier"
+
+   56 var_list: var_list var_def
+   57         | var_list var_decl
+   58         | var_def
+   59         | var_decl
+
+   60 state_def_list: state_def
+   61               | state_def_list state_def
+
+   62 state_def: "STATE" state_id "left brace" statements_list timeout_statement "right brace"
+   63          | "STATE" state_id "left brace" statements_list "right brace"
+
+   64 state_id: "identifier"
+
+   65 statements_list: statements_list statement
+   66                | statement
+
+   67 timeout_statement: "TIMEOUT" timeout_arg statement
+
+   68 timeout_arg: "integer constant"
+   69            | const_id
+
+   70 statement: compound_statement
+   71          | start_statement
+   72          | stop_statement
+   73          | error_statement
+   74          | if_statement
+   75          | switch_statement
+   76          | labeled_statement
+   77          | loop_statement
+   78          | state_transition
+   79          | restart_statement
+   80          | reset_statement
+   81          | expression_statement
+
+   82 restart_statement: "RESTART" "semicolon"
+
+   83 reset_statement: "RESET" "TIMEOUT" "semicolon"
+
+   84 state_transition: "SET" "STATE" state_id "semicolon"
+   85                 | "SET" "NEXT" "semicolon"
+
+   86 expression_statement: expr "semicolon"
+   87                     | "semicolon"
+
+   88 if_statement: "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | "IF\t" "left parentheses" expr "right parentheses" statement
+
+   90 switch_statement: "SWITCH" "left parentheses" expr "right parentheses" statement
+
+   91 labeled_statement: "CASE" expr "colon" statement
+
+   92 loop_statement: "LOOP" "semicolon"
+
+   93 compound_statement: "left brace" statements_list "right brace"
+   94                   | "left brace" "right brace"
+
+   95 start_statement: "START" proc_id "semicolon"
+
+   96 stop_statement: "STOP" proc_id "semicolon"
+   97               | "STOP" "semicolon"
+
+   98 error_statement: "ERROR" proc_id "semicolon"
+   99                | "ERROR" "semicolon"
+
+  100 expr: assignment_expr
+
+  101 assignment_expr: binary_expr
+  102                | unary_expr assignement_op assignment_expr
+
+  103 binary_expr: cast_expr
+  104            | binary_expr binary_op cast_expr
+
+  105 unary_expr: postfix_expr
+  106           | unary_op unary_expr
+
+  107 postfix_expr: primary_expr
+  108             | "identifier" "left parentheses" "right parentheses"
+  109             | "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | postfix_expr postfix_op
+
+  111 arg_expr_list: arg_expr_list "comma" assignment_expr
+  112              | assignment_expr
+
+  113 primary_expr: "integer constant"
+  114             | "floating-point constant"
+  115             | "identifier"
+  116             | "left parentheses" expr "right parentheses"
+  117             | "PROC" proc_id "IN" "STATE" "STOP"
+  118             | "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | "PROC" proc_id "IS" "ACTIVE"
+  120             | "PROC" proc_id "IS" "INACTIVE"
+
+  121 cast_expr: unary_expr
+  122          | "left parentheses" c_type_spec "right parentheses" cast_expr
+
+  123 postfix_op: "++"
+  124           | "--"
+
+  125 binary_op: "||"
+  126          | "&&"
+  127          | "|"
+  128          | "^"
+  129          | "&"
+  130          | "=="
+  131          | "!="
+  132          | "<"
+  133          | ">"
+  134          | "<="
+  135          | ">="
+  136          | "<<"
+  137          | ">>"
+  138          | "+"
+  139          | "-"
+  140          | "*"
+  141          | "/"
+  142          | "%"
+
+  143 unary_op: "++"
+  144         | "--"
+  145         | "-"
+  146         | "~"
+  147         | "!"
+
+  148 assignement_op: "="
+  149               | ">>="
+  150               | "<<="
+  151               | "+="
+  152               | "-="
+  153               | "*="
+  154               | "/="
+  155               | "%="
+  156               | "&="
+  157               | "^="
+  158               | "|="
+
+  159 c_type_spec: "BOOL"
+  160            | "VOID"
+  161            | "FLOAT"
+  162            | "DOUBLE"
+  163            | singness_spec size_spec
+  164            | size_spec
+
+  165 singness_spec: "SIGNED"
+  166              | "UNSIGNED"
+
+  167 size_spec: "SHORT"
+  168          | "INT"
+  169          | "LONG"
+
+  170 var_def: phys_var_def scope_spec "semicolon"
+  171        | calc_var_def scope_spec "semicolon"
+
+  172 phys_var_def: c_type_spec var_id "=" "left brace" reg_bits_spec_list "right brace"
+
+  173 var_id: "identifier"
+
+  174 reg_id: "identifier"
+
+  175 reg_bits_spec_list: reg_bits_spec_list "comma" reg_bits_spec
+  176                   | reg_bits_spec
+
+  177 reg_bits_spec: reg_id "left bracket" "integer constant" "right bracket"
+
+  178 calc_var_def: c_type_spec var_id
+
+  179 scope_spec: "LOCAL"
+  180           | "FOR" "ALL"
+  181           | "FOR" proc_id_list
+
+  182 proc_id_list: proc_id_list "comma" proc_id
+  183             | proc_id
+
+  184 var_decl: "FROM" "PROC" proc_id var_id_list "semicolon"
+
+  185 var_id_list: var_id_list "comma" var_id
+  186            | var_id
+
+  187 register_def: "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+
+  189 reg_addr: "integer constant"
+
+  190 register_size: "integer constant"
+
+  191 func_decl: c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+
+  192 func_id: "identifier"
+
+  193 c_type_spec_list: c_type_spec_list "comma" c_type_spec
+  194                 | c_type_spec
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    "PROGR" <token> (258) 1
+    "TACT" <token> (259) 10
+    "CONST" <token> (260) 15
+    "ENUM" <token> (261) 42
+    "INPUT" <string> (262) 187
+    "OUTPUT" <string> (263) 188
+    "PROC" <token> (264) 53 54 117 118 119 120 184
+    "LOCAL" <string> (265) 179
+    "FOR" <string> (266) 180 181
+    "ALL" <string> (267) 180
+    "FROM" <token> (268) 184
+    "STATE" <token> (269) 62 63 84 117 118
+    "SWITCH" <token> (270) 90
+    "CASE" <token> (271) 91
+    "BREAK" <token> (272)
+    "IF\t" <token> (273) 88 89
+    "ELSE" <token> (274) 88
+    "START" <token> (275) 95
+    "STOP" <token> (276) 96 97 117
+    "ERROR" <token> (277) 98 99 118
+    "RESTART" <token> (278) 82
+    "LOOP" <token> (279) 92
+    "SET" <token> (280) 84 85
+    "NEXT" <token> (281) 85
+    "RESET" <token> (282) 83
+    "TIMEOUT" <token> (283) 67 83
+    "IN" <token> (284) 117 118
+    "IS" <token> (285) 119 120
+    "ACTIVE" <token> (286) 119
+    "INACTIVE" <token> (287) 120
+    "BOOL" <string> (288) 159
+    "VOID" <string> (289) 160
+    "FLOAT" <string> (290) 161
+    "DOUBLE" <string> (291) 162
+    "SIGNED" <string> (292) 165
+    "UNSIGNED" <string> (293) 166
+    "SHORT" <string> (294) 167
+    "LONG" <string> (295) 169
+    "INT" <string> (296) 168
+    "identifier" <string> (297) 1 16 55 64 108 109 115 173 174 192
+    "floating-point constant" <string> (298) 40 114
+    "integer constant" <string> (299) 10 39 68 113 177 189 190
+    "left parentheses" <token> (300) 88 89 90 108 109 116 122 191
+    "right parentheses" <token> (301) 88 89 90 108 109 116 122 191
+    "left bracket" <token> (302) 177
+    "right bracket" <token> (303) 177
+    "semicolon" <token> (304) 10 15 82 83 84 85 86 87 92 95 96 97 98 99 170 171 184 187 188 191
+    "left brace" <token> (305) 1 42 53 54 62 63 93 94 172
+    "right brace" <token> (306) 1 42 53 54 62 63 93 94 172
+    "colon" <token> (307) 91
+    "=" <string> (308) 46 148 172
+    "comma" <string> (309) 43 111 175 182 185 193
+    "." <string> (310)
+    "&" <string> (311) 34 129
+    "!" <string> (312) 24 147
+    "~" <string> (313) 23 146
+    "-" <string> (314) 26 28 139 145
+    "+" <string> (315) 25 27 138
+    "*" <string> (316) 29 140
+    "/" <string> (317) 30 141
+    "%" <string> (318) 31 142
+    "<" <string> (319) 132
+    ">" <string> (320) 133
+    "^" <string> (321) 35 128
+    "|" <string> (322) 36 127
+    "?" <string> (323)
+    "==" <string> (324) 130
+    "!=" <string> (325) 131
+    "<=" <string> (326) 134
+    ">=" <string> (327) 135
+    "++" <string> (328) 123 143
+    "--" <string> (329) 124 144
+    ">>" <string> (330) 33 137
+    "<<" <string> (331) 32 136
+    "||" <string> (332) 38 125
+    "&&" <string> (333) 37 126
+    ">>=" <string> (334) 149
+    "<<=" <string> (335) 150
+    "+=" <string> (336) 151
+    "-=" <string> (337) 152
+    "*=" <string> (338) 153
+    "/=" <string> (339) 154
+    "%=" <string> (340) 155
+    "&=" <string> (341) 156
+    "^=" <string> (342) 157
+    "|=" <string> (343) 158
+    XIF (344)
+    UMINUS (345)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (91)
+        on left: 0
+    program (92)
+        on left: 1
+        on right: 0
+    program_body <node_list> (93)
+        on left: 2 3 4 5 6 7 8 9
+        on right: 1
+    tact <ast_node> (94)
+        on left: 10
+        on right: 1
+    const_enum_list <node_list> (95)
+        on left: 11 12
+        on right: 3 4 5 7 11
+    const_or_enum_spec <ast_node> (96)
+        on left: 13 14
+        on right: 11 12
+    const_spec <ast_node> (97)
+        on left: 15
+        on right: 13
+    const_id <ast_node> (98)
+        on left: 16
+        on right: 15 41 45 46 69
+    const_exp_body <ast_node> (99)
+        on left: 17 18
+        on right: 15 46
+    infix_term_list <node_list> (100)
+        on left: 19 20
+        on right: 18 19
+    const_pref_term <ast_node> (101)
+        on left: 21 22
+        on right: 17 18 19 20
+    const_prefix <string> (102)
+        on left: 23 24 25 26
+        on right: 21
+    const_infix <string> (103)
+        on left: 27 28 29 30 31 32 33 34 35 36 37 38
+        on right: 19 20
+    const_term <ast_node> (104)
+        on left: 39 40 41
+        on right: 21 22
+    enum_def <ast_node> (105)
+        on left: 42
+        on right: 14
+    enum_list <ast_node> (106)
+        on left: 43 44
+        on right: 42 43
+    enumerator <ast_node> (107)
+        on left: 45 46
+        on right: 43 44
+    func_decl_list <node_list> (108)
+        on left: 47 48
+        on right: 3 4 6 8 47
+    register_def_list <node_list> (109)
+        on left: 49 50
+        on right: 3 5 6 9 49
+    proc_def_list <node_list> (110)
+        on left: 51 52
+        on right: 1 52
+    proc_def <ast_node> (111)
+        on left: 53 54
+        on right: 51 52
+    proc_id <ast_node> (112)
+        on left: 55
+        on right: 53 54 95 96 98 117 118 119 120 182 183 184
+    var_list <ast_node> (113)
+        on left: 56 57 58 59
+        on right: 53 56 57
+    state_def_list <node_list> (114)
+        on left: 60 61
+        on right: 53 54 61
+    state_def <ast_node> (115)
+        on left: 62 63
+        on right: 60 61
+    state_id <ast_node> (116)
+        on left: 64
+        on right: 62 63 84
+    statements_list <ast_node> (117)
+        on left: 65 66
+        on right: 62 63 65 93
+    timeout_statement <ast_node> (118)
+        on left: 67
+        on right: 62
+    timeout_arg <ast_node> (119)
+        on left: 68 69
+        on right: 67
+    statement <ast_node> (120)
+        on left: 70 71 72 73 74 75 76 77 78 79 80 81
+        on right: 65 66 67 88 89 90 91
+    restart_statement <ast_node> (121)
+        on left: 82
+        on right: 79
+    reset_statement <ast_node> (122)
+        on left: 83
+        on right: 80
+    state_transition <ast_node> (123)
+        on left: 84 85
+        on right: 78
+    expression_statement <ast_node> (124)
+        on left: 86 87
+        on right: 81
+    if_statement <ast_node> (125)
+        on left: 88 89
+        on right: 74
+    switch_statement <ast_node> (126)
+        on left: 90
+        on right: 75
+    labeled_statement <ast_node> (127)
+        on left: 91
+        on right: 76
+    loop_statement <ast_node> (128)
+        on left: 92
+        on right: 77
+    compound_statement <ast_node> (129)
+        on left: 93 94
+        on right: 70
+    start_statement <ast_node> (130)
+        on left: 95
+        on right: 71
+    stop_statement <ast_node> (131)
+        on left: 96 97
+        on right: 72
+    error_statement <ast_node> (132)
+        on left: 98 99
+        on right: 73
+    expr <ast_node> (133)
+        on left: 100
+        on right: 86 88 89 90 91 116
+    assignment_expr <ast_node> (134)
+        on left: 101 102
+        on right: 100 102 111 112
+    binary_expr <ast_node> (135)
+        on left: 103 104
+        on right: 101 104
+    unary_expr <ast_node> (136)
+        on left: 105 106
+        on right: 102 106 121
+    postfix_expr <ast_node> (137)
+        on left: 107 108 109 110
+        on right: 105 110
+    arg_expr_list <ast_node> (138)
+        on left: 111 112
+        on right: 109 111
+    primary_expr <ast_node> (139)
+        on left: 113 114 115 116 117 118 119 120
+        on right: 107
+    cast_expr <ast_node> (140)
+        on left: 121 122
+        on right: 103 104 122
+    postfix_op <string> (141)
+        on left: 123 124
+        on right: 110
+    binary_op <string> (142)
+        on left: 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142
+        on right: 104
+    unary_op <string> (143)
+        on left: 143 144 145 146 147
+        on right: 106
+    assignement_op <string> (144)
+        on left: 148 149 150 151 152 153 154 155 156 157 158
+        on right: 102
+    c_type_spec <string> (145)
+        on left: 159 160 161 162 163 164
+        on right: 122 172 178 191 193 194
+    singness_spec <string> (146)
+        on left: 165 166
+        on right: 163
+    size_spec <string> (147)
+        on left: 167 168 169
+        on right: 163 164
+    var_def <ast_node> (148)
+        on left: 170 171
+        on right: 56 58
+    phys_var_def <ast_node> (149)
+        on left: 172
+        on right: 170
+    var_id <ast_node> (150)
+        on left: 173
+        on right: 172 178 185 186
+    reg_id <ast_node> (151)
+        on left: 174
+        on right: 177 187 188
+    reg_bits_spec_list <ast_node> (152)
+        on left: 175 176
+        on right: 172 175
+    reg_bits_spec <ast_node> (153)
+        on left: 177
+        on right: 175 176
+    calc_var_def <ast_node> (154)
+        on left: 178
+        on right: 171
+    scope_spec <ast_node> (155)
+        on left: 179 180 181
+        on right: 170 171
+    proc_id_list <ast_node> (156)
+        on left: 182 183
+        on right: 181 182
+    var_decl <ast_node> (157)
+        on left: 184
+        on right: 57 59
+    var_id_list <ast_node> (158)
+        on left: 185 186
+        on right: 184 185
+    register_def <ast_node> (159)
+        on left: 187 188
+        on right: 49 50
+    reg_addr <ast_node> (160)
+        on left: 189
+        on right: 187 188
+    register_size <ast_node> (161)
+        on left: 190
+        on right: 187 188
+    func_decl <ast_node> (162)
+        on left: 191
+        on right: 47 48
+    func_id <ast_node> (163)
+        on left: 192
+        on right: 191
+    c_type_spec_list <ast_node> (164)
+        on left: 193 194
+        on right: 191 193
+
+
+State 0
+
+    0 $accept: . program $end
+    1 program: . "PROGR" "identifier" "left brace" tact program_body proc_def_list "right brace"
+
+    "PROGR"  shift, and go to state 1
+
+    program  go to state 2
+
+
+State 1
+
+    1 program: "PROGR" . "identifier" "left brace" tact program_body proc_def_list "right brace"
+
+    "identifier"  shift, and go to state 3
+
+
+State 2
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 program: "PROGR" "identifier" . "left brace" tact program_body proc_def_list "right brace"
+
+    "left brace"  shift, and go to state 5
+
+
+State 4
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 5
+
+    1 program: "PROGR" "identifier" "left brace" . tact program_body proc_def_list "right brace"
+   10 tact: . "TACT" "integer constant" "semicolon"
+
+    "TACT"  shift, and go to state 6
+
+    tact  go to state 7
+
+
+State 6
+
+   10 tact: "TACT" . "integer constant" "semicolon"
+
+    "integer constant"  shift, and go to state 8
+
+
+State 7
+
+    1 program: "PROGR" "identifier" "left brace" tact . program_body proc_def_list "right brace"
+    2 program_body: . %empty  ["PROC"]
+    3             | . const_enum_list func_decl_list register_def_list
+    4             | . const_enum_list func_decl_list
+    5             | . const_enum_list register_def_list
+    6             | . func_decl_list register_def_list
+    7             | . const_enum_list
+    8             | . func_decl_list
+    9             | . register_def_list
+   11 const_enum_list: . const_enum_list const_or_enum_spec
+   12                | . const_or_enum_spec
+   13 const_or_enum_spec: . const_spec
+   14                   | . enum_def
+   15 const_spec: . "CONST" const_id const_exp_body "semicolon"
+   42 enum_def: . "ENUM" "left brace" enum_list "right brace"
+   47 func_decl_list: . func_decl_list func_decl
+   48               | . func_decl
+   49 register_def_list: . register_def_list register_def
+   50                  | . register_def
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  191 func_decl: . c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+
+    "CONST"     shift, and go to state 9
+    "ENUM"      shift, and go to state 10
+    "INPUT"     shift, and go to state 11
+    "OUTPUT"    shift, and go to state 12
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    $default  reduce using rule 2 (program_body)
+
+    program_body        go to state 22
+    const_enum_list     go to state 23
+    const_or_enum_spec  go to state 24
+    const_spec          go to state 25
+    enum_def            go to state 26
+    func_decl_list      go to state 27
+    register_def_list   go to state 28
+    c_type_spec         go to state 29
+    singness_spec       go to state 30
+    size_spec           go to state 31
+    register_def        go to state 32
+    func_decl           go to state 33
+
+
+State 8
+
+   10 tact: "TACT" "integer constant" . "semicolon"
+
+    "semicolon"  shift, and go to state 34
+
+
+State 9
+
+   15 const_spec: "CONST" . const_id const_exp_body "semicolon"
+   16 const_id: . "identifier"
+
+    "identifier"  shift, and go to state 35
+
+    const_id  go to state 36
+
+
+State 10
+
+   42 enum_def: "ENUM" . "left brace" enum_list "right brace"
+
+    "left brace"  shift, and go to state 37
+
+
+State 11
+
+  174 reg_id: . "identifier"
+  187 register_def: "INPUT" . reg_id reg_addr reg_addr register_size "semicolon"
+
+    "identifier"  shift, and go to state 38
+
+    reg_id  go to state 39
+
+
+State 12
+
+  174 reg_id: . "identifier"
+  188 register_def: "OUTPUT" . reg_id reg_addr reg_addr register_size "semicolon"
+
+    "identifier"  shift, and go to state 38
+
+    reg_id  go to state 40
+
+
+State 13
+
+  159 c_type_spec: "BOOL" .
+
+    $default  reduce using rule 159 (c_type_spec)
+
+
+State 14
+
+  160 c_type_spec: "VOID" .
+
+    $default  reduce using rule 160 (c_type_spec)
+
+
+State 15
+
+  161 c_type_spec: "FLOAT" .
+
+    $default  reduce using rule 161 (c_type_spec)
+
+
+State 16
+
+  162 c_type_spec: "DOUBLE" .
+
+    $default  reduce using rule 162 (c_type_spec)
+
+
+State 17
+
+  165 singness_spec: "SIGNED" .
+
+    $default  reduce using rule 165 (singness_spec)
+
+
+State 18
+
+  166 singness_spec: "UNSIGNED" .
+
+    $default  reduce using rule 166 (singness_spec)
+
+
+State 19
+
+  167 size_spec: "SHORT" .
+
+    $default  reduce using rule 167 (size_spec)
+
+
+State 20
+
+  169 size_spec: "LONG" .
+
+    $default  reduce using rule 169 (size_spec)
+
+
+State 21
+
+  168 size_spec: "INT" .
+
+    $default  reduce using rule 168 (size_spec)
+
+
+State 22
+
+    1 program: "PROGR" "identifier" "left brace" tact program_body . proc_def_list "right brace"
+   51 proc_def_list: . proc_def
+   52              | . proc_def_list proc_def
+   53 proc_def: . "PROC" proc_id "left brace" var_list state_def_list "right brace"
+   54         | . "PROC" proc_id "left brace" state_def_list "right brace"
+
+    "PROC"  shift, and go to state 41
+
+    proc_def_list  go to state 42
+    proc_def       go to state 43
+
+
+State 23
+
+    3 program_body: const_enum_list . func_decl_list register_def_list
+    4             | const_enum_list . func_decl_list
+    5             | const_enum_list . register_def_list
+    7             | const_enum_list .  ["PROC"]
+   11 const_enum_list: const_enum_list . const_or_enum_spec
+   13 const_or_enum_spec: . const_spec
+   14                   | . enum_def
+   15 const_spec: . "CONST" const_id const_exp_body "semicolon"
+   42 enum_def: . "ENUM" "left brace" enum_list "right brace"
+   47 func_decl_list: . func_decl_list func_decl
+   48               | . func_decl
+   49 register_def_list: . register_def_list register_def
+   50                  | . register_def
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  191 func_decl: . c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+
+    "CONST"     shift, and go to state 9
+    "ENUM"      shift, and go to state 10
+    "INPUT"     shift, and go to state 11
+    "OUTPUT"    shift, and go to state 12
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    $default  reduce using rule 7 (program_body)
+
+    const_or_enum_spec  go to state 44
+    const_spec          go to state 25
+    enum_def            go to state 26
+    func_decl_list      go to state 45
+    register_def_list   go to state 46
+    c_type_spec         go to state 29
+    singness_spec       go to state 30
+    size_spec           go to state 31
+    register_def        go to state 32
+    func_decl           go to state 33
+
+
+State 24
+
+   12 const_enum_list: const_or_enum_spec .
+
+    $default  reduce using rule 12 (const_enum_list)
+
+
+State 25
+
+   13 const_or_enum_spec: const_spec .
+
+    $default  reduce using rule 13 (const_or_enum_spec)
+
+
+State 26
+
+   14 const_or_enum_spec: enum_def .
+
+    $default  reduce using rule 14 (const_or_enum_spec)
+
+
+State 27
+
+    6 program_body: func_decl_list . register_def_list
+    8             | func_decl_list .  ["PROC"]
+   47 func_decl_list: func_decl_list . func_decl
+   49 register_def_list: . register_def_list register_def
+   50                  | . register_def
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  191 func_decl: . c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+
+    "INPUT"     shift, and go to state 11
+    "OUTPUT"    shift, and go to state 12
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    $default  reduce using rule 8 (program_body)
+
+    register_def_list  go to state 47
+    c_type_spec        go to state 29
+    singness_spec      go to state 30
+    size_spec          go to state 31
+    register_def       go to state 32
+    func_decl          go to state 48
+
+
+State 28
+
+    9 program_body: register_def_list .  ["PROC"]
+   49 register_def_list: register_def_list . register_def
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+
+    "INPUT"   shift, and go to state 11
+    "OUTPUT"  shift, and go to state 12
+
+    $default  reduce using rule 9 (program_body)
+
+    register_def  go to state 49
+
+
+State 29
+
+  191 func_decl: c_type_spec . func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+  192 func_id: . "identifier"
+
+    "identifier"  shift, and go to state 50
+
+    func_id  go to state 51
+
+
+State 30
+
+  163 c_type_spec: singness_spec . size_spec
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+
+    "SHORT"  shift, and go to state 19
+    "LONG"   shift, and go to state 20
+    "INT"    shift, and go to state 21
+
+    size_spec  go to state 52
+
+
+State 31
+
+  164 c_type_spec: size_spec .
+
+    $default  reduce using rule 164 (c_type_spec)
+
+
+State 32
+
+   50 register_def_list: register_def .
+
+    $default  reduce using rule 50 (register_def_list)
+
+
+State 33
+
+   48 func_decl_list: func_decl .
+
+    $default  reduce using rule 48 (func_decl_list)
+
+
+State 34
+
+   10 tact: "TACT" "integer constant" "semicolon" .
+
+    $default  reduce using rule 10 (tact)
+
+
+State 35
+
+   16 const_id: "identifier" .
+
+    $default  reduce using rule 16 (const_id)
+
+
+State 36
+
+   15 const_spec: "CONST" const_id . const_exp_body "semicolon"
+   16 const_id: . "identifier"
+   17 const_exp_body: . const_pref_term
+   18               | . const_pref_term infix_term_list
+   21 const_pref_term: . const_prefix const_term
+   22                | . const_term
+   23 const_prefix: . "~"
+   24             | . "!"
+   25             | . "+"
+   26             | . "-"
+   39 const_term: . "integer constant"
+   40           | . "floating-point constant"
+   41           | . const_id
+
+    "identifier"               shift, and go to state 35
+    "floating-point constant"  shift, and go to state 53
+    "integer constant"         shift, and go to state 54
+    "!"                        shift, and go to state 55
+    "~"                        shift, and go to state 56
+    "-"                        shift, and go to state 57
+    "+"                        shift, and go to state 58
+
+    const_id         go to state 59
+    const_exp_body   go to state 60
+    const_pref_term  go to state 61
+    const_prefix     go to state 62
+    const_term       go to state 63
+
+
+State 37
+
+   16 const_id: . "identifier"
+   42 enum_def: "ENUM" "left brace" . enum_list "right brace"
+   43 enum_list: . enum_list "comma" enumerator
+   44          | . enumerator
+   45 enumerator: . const_id
+   46           | . const_id "=" const_exp_body
+
+    "identifier"  shift, and go to state 35
+
+    const_id    go to state 64
+    enum_list   go to state 65
+    enumerator  go to state 66
+
+
+State 38
+
+  174 reg_id: "identifier" .
+
+    $default  reduce using rule 174 (reg_id)
+
+
+State 39
+
+  187 register_def: "INPUT" reg_id . reg_addr reg_addr register_size "semicolon"
+  189 reg_addr: . "integer constant"
+
+    "integer constant"  shift, and go to state 67
+
+    reg_addr  go to state 68
+
+
+State 40
+
+  188 register_def: "OUTPUT" reg_id . reg_addr reg_addr register_size "semicolon"
+  189 reg_addr: . "integer constant"
+
+    "integer constant"  shift, and go to state 67
+
+    reg_addr  go to state 69
+
+
+State 41
+
+   53 proc_def: "PROC" . proc_id "left brace" var_list state_def_list "right brace"
+   54         | "PROC" . proc_id "left brace" state_def_list "right brace"
+   55 proc_id: . "identifier"
+
+    "identifier"  shift, and go to state 70
+
+    proc_id  go to state 71
+
+
+State 42
+
+    1 program: "PROGR" "identifier" "left brace" tact program_body proc_def_list . "right brace"
+   52 proc_def_list: proc_def_list . proc_def
+   53 proc_def: . "PROC" proc_id "left brace" var_list state_def_list "right brace"
+   54         | . "PROC" proc_id "left brace" state_def_list "right brace"
+
+    "PROC"         shift, and go to state 41
+    "right brace"  shift, and go to state 72
+
+    proc_def  go to state 73
+
+
+State 43
+
+   51 proc_def_list: proc_def .
+
+    $default  reduce using rule 51 (proc_def_list)
+
+
+State 44
+
+   11 const_enum_list: const_enum_list const_or_enum_spec .
+
+    $default  reduce using rule 11 (const_enum_list)
+
+
+State 45
+
+    3 program_body: const_enum_list func_decl_list . register_def_list
+    4             | const_enum_list func_decl_list .  ["PROC"]
+   47 func_decl_list: func_decl_list . func_decl
+   49 register_def_list: . register_def_list register_def
+   50                  | . register_def
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  191 func_decl: . c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+
+    "INPUT"     shift, and go to state 11
+    "OUTPUT"    shift, and go to state 12
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    $default  reduce using rule 4 (program_body)
+
+    register_def_list  go to state 74
+    c_type_spec        go to state 29
+    singness_spec      go to state 30
+    size_spec          go to state 31
+    register_def       go to state 32
+    func_decl          go to state 48
+
+
+State 46
+
+    5 program_body: const_enum_list register_def_list .  ["PROC"]
+   49 register_def_list: register_def_list . register_def
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+
+    "INPUT"   shift, and go to state 11
+    "OUTPUT"  shift, and go to state 12
+
+    $default  reduce using rule 5 (program_body)
+
+    register_def  go to state 49
+
+
+State 47
+
+    6 program_body: func_decl_list register_def_list .  ["PROC"]
+   49 register_def_list: register_def_list . register_def
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+
+    "INPUT"   shift, and go to state 11
+    "OUTPUT"  shift, and go to state 12
+
+    $default  reduce using rule 6 (program_body)
+
+    register_def  go to state 49
+
+
+State 48
+
+   47 func_decl_list: func_decl_list func_decl .
+
+    $default  reduce using rule 47 (func_decl_list)
+
+
+State 49
+
+   49 register_def_list: register_def_list register_def .
+
+    $default  reduce using rule 49 (register_def_list)
+
+
+State 50
+
+  192 func_id: "identifier" .
+
+    $default  reduce using rule 192 (func_id)
+
+
+State 51
+
+  191 func_decl: c_type_spec func_id . "left parentheses" c_type_spec_list "right parentheses" "semicolon"
+
+    "left parentheses"  shift, and go to state 75
+
+
+State 52
+
+  163 c_type_spec: singness_spec size_spec .
+
+    $default  reduce using rule 163 (c_type_spec)
+
+
+State 53
+
+   40 const_term: "floating-point constant" .
+
+    $default  reduce using rule 40 (const_term)
+
+
+State 54
+
+   39 const_term: "integer constant" .
+
+    $default  reduce using rule 39 (const_term)
+
+
+State 55
+
+   24 const_prefix: "!" .
+
+    $default  reduce using rule 24 (const_prefix)
+
+
+State 56
+
+   23 const_prefix: "~" .
+
+    $default  reduce using rule 23 (const_prefix)
+
+
+State 57
+
+   26 const_prefix: "-" .
+
+    $default  reduce using rule 26 (const_prefix)
+
+
+State 58
+
+   25 const_prefix: "+" .
+
+    $default  reduce using rule 25 (const_prefix)
+
+
+State 59
+
+   41 const_term: const_id .
+
+    $default  reduce using rule 41 (const_term)
+
+
+State 60
+
+   15 const_spec: "CONST" const_id const_exp_body . "semicolon"
+
+    "semicolon"  shift, and go to state 76
+
+
+State 61
+
+   17 const_exp_body: const_pref_term .  ["semicolon", "right brace", "comma"]
+   18               | const_pref_term . infix_term_list
+   19 infix_term_list: . infix_term_list const_infix const_pref_term
+   20                | . const_infix const_pref_term
+   27 const_infix: . "+"
+   28            | . "-"
+   29            | . "*"
+   30            | . "/"
+   31            | . "%"
+   32            | . "<<"
+   33            | . ">>"
+   34            | . "&"
+   35            | . "^"
+   36            | . "|"
+   37            | . "&&"
+   38            | . "||"
+
+    "&"   shift, and go to state 77
+    "-"   shift, and go to state 78
+    "+"   shift, and go to state 79
+    "*"   shift, and go to state 80
+    "/"   shift, and go to state 81
+    "%"   shift, and go to state 82
+    "^"   shift, and go to state 83
+    "|"   shift, and go to state 84
+    ">>"  shift, and go to state 85
+    "<<"  shift, and go to state 86
+    "||"  shift, and go to state 87
+    "&&"  shift, and go to state 88
+
+    $default  reduce using rule 17 (const_exp_body)
+
+    infix_term_list  go to state 89
+    const_infix      go to state 90
+
+
+State 62
+
+   16 const_id: . "identifier"
+   21 const_pref_term: const_prefix . const_term
+   39 const_term: . "integer constant"
+   40           | . "floating-point constant"
+   41           | . const_id
+
+    "identifier"               shift, and go to state 35
+    "floating-point constant"  shift, and go to state 53
+    "integer constant"         shift, and go to state 54
+
+    const_id    go to state 59
+    const_term  go to state 91
+
+
+State 63
+
+   22 const_pref_term: const_term .
+
+    $default  reduce using rule 22 (const_pref_term)
+
+
+State 64
+
+   45 enumerator: const_id .  ["right brace", "comma"]
+   46           | const_id . "=" const_exp_body
+
+    "="  shift, and go to state 92
+
+    $default  reduce using rule 45 (enumerator)
+
+
+State 65
+
+   42 enum_def: "ENUM" "left brace" enum_list . "right brace"
+   43 enum_list: enum_list . "comma" enumerator
+
+    "right brace"  shift, and go to state 93
+    "comma"        shift, and go to state 94
+
+
+State 66
+
+   44 enum_list: enumerator .
+
+    $default  reduce using rule 44 (enum_list)
+
+
+State 67
+
+  189 reg_addr: "integer constant" .
+
+    $default  reduce using rule 189 (reg_addr)
+
+
+State 68
+
+  187 register_def: "INPUT" reg_id reg_addr . reg_addr register_size "semicolon"
+  189 reg_addr: . "integer constant"
+
+    "integer constant"  shift, and go to state 67
+
+    reg_addr  go to state 95
+
+
+State 69
+
+  188 register_def: "OUTPUT" reg_id reg_addr . reg_addr register_size "semicolon"
+  189 reg_addr: . "integer constant"
+
+    "integer constant"  shift, and go to state 67
+
+    reg_addr  go to state 96
+
+
+State 70
+
+   55 proc_id: "identifier" .
+
+    $default  reduce using rule 55 (proc_id)
+
+
+State 71
+
+   53 proc_def: "PROC" proc_id . "left brace" var_list state_def_list "right brace"
+   54         | "PROC" proc_id . "left brace" state_def_list "right brace"
+
+    "left brace"  shift, and go to state 97
+
+
+State 72
+
+    1 program: "PROGR" "identifier" "left brace" tact program_body proc_def_list "right brace" .
+
+    $default  reduce using rule 1 (program)
+
+
+State 73
+
+   52 proc_def_list: proc_def_list proc_def .
+
+    $default  reduce using rule 52 (proc_def_list)
+
+
+State 74
+
+    3 program_body: const_enum_list func_decl_list register_def_list .  ["PROC"]
+   49 register_def_list: register_def_list . register_def
+  187 register_def: . "INPUT" reg_id reg_addr reg_addr register_size "semicolon"
+  188             | . "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon"
+
+    "INPUT"   shift, and go to state 11
+    "OUTPUT"  shift, and go to state 12
+
+    $default  reduce using rule 3 (program_body)
+
+    register_def  go to state 49
+
+
+State 75
+
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  191 func_decl: c_type_spec func_id "left parentheses" . c_type_spec_list "right parentheses" "semicolon"
+  193 c_type_spec_list: . c_type_spec_list "comma" c_type_spec
+  194                 | . c_type_spec
+
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    c_type_spec       go to state 98
+    singness_spec     go to state 30
+    size_spec         go to state 31
+    c_type_spec_list  go to state 99
+
+
+State 76
+
+   15 const_spec: "CONST" const_id const_exp_body "semicolon" .
+
+    $default  reduce using rule 15 (const_spec)
+
+
+State 77
+
+   34 const_infix: "&" .
+
+    $default  reduce using rule 34 (const_infix)
+
+
+State 78
+
+   28 const_infix: "-" .
+
+    $default  reduce using rule 28 (const_infix)
+
+
+State 79
+
+   27 const_infix: "+" .
+
+    $default  reduce using rule 27 (const_infix)
+
+
+State 80
+
+   29 const_infix: "*" .
+
+    $default  reduce using rule 29 (const_infix)
+
+
+State 81
+
+   30 const_infix: "/" .
+
+    $default  reduce using rule 30 (const_infix)
+
+
+State 82
+
+   31 const_infix: "%" .
+
+    $default  reduce using rule 31 (const_infix)
+
+
+State 83
+
+   35 const_infix: "^" .
+
+    $default  reduce using rule 35 (const_infix)
+
+
+State 84
+
+   36 const_infix: "|" .
+
+    $default  reduce using rule 36 (const_infix)
+
+
+State 85
+
+   33 const_infix: ">>" .
+
+    $default  reduce using rule 33 (const_infix)
+
+
+State 86
+
+   32 const_infix: "<<" .
+
+    $default  reduce using rule 32 (const_infix)
+
+
+State 87
+
+   38 const_infix: "||" .
+
+    $default  reduce using rule 38 (const_infix)
+
+
+State 88
+
+   37 const_infix: "&&" .
+
+    $default  reduce using rule 37 (const_infix)
+
+
+State 89
+
+   18 const_exp_body: const_pref_term infix_term_list .  ["semicolon", "right brace", "comma"]
+   19 infix_term_list: infix_term_list . const_infix const_pref_term
+   27 const_infix: . "+"
+   28            | . "-"
+   29            | . "*"
+   30            | . "/"
+   31            | . "%"
+   32            | . "<<"
+   33            | . ">>"
+   34            | . "&"
+   35            | . "^"
+   36            | . "|"
+   37            | . "&&"
+   38            | . "||"
+
+    "&"   shift, and go to state 77
+    "-"   shift, and go to state 78
+    "+"   shift, and go to state 79
+    "*"   shift, and go to state 80
+    "/"   shift, and go to state 81
+    "%"   shift, and go to state 82
+    "^"   shift, and go to state 83
+    "|"   shift, and go to state 84
+    ">>"  shift, and go to state 85
+    "<<"  shift, and go to state 86
+    "||"  shift, and go to state 87
+    "&&"  shift, and go to state 88
+
+    $default  reduce using rule 18 (const_exp_body)
+
+    const_infix  go to state 100
+
+
+State 90
+
+   16 const_id: . "identifier"
+   20 infix_term_list: const_infix . const_pref_term
+   21 const_pref_term: . const_prefix const_term
+   22                | . const_term
+   23 const_prefix: . "~"
+   24             | . "!"
+   25             | . "+"
+   26             | . "-"
+   39 const_term: . "integer constant"
+   40           | . "floating-point constant"
+   41           | . const_id
+
+    "identifier"               shift, and go to state 35
+    "floating-point constant"  shift, and go to state 53
+    "integer constant"         shift, and go to state 54
+    "!"                        shift, and go to state 55
+    "~"                        shift, and go to state 56
+    "-"                        shift, and go to state 57
+    "+"                        shift, and go to state 58
+
+    const_id         go to state 59
+    const_pref_term  go to state 101
+    const_prefix     go to state 62
+    const_term       go to state 63
+
+
+State 91
+
+   21 const_pref_term: const_prefix const_term .
+
+    $default  reduce using rule 21 (const_pref_term)
+
+
+State 92
+
+   16 const_id: . "identifier"
+   17 const_exp_body: . const_pref_term
+   18               | . const_pref_term infix_term_list
+   21 const_pref_term: . const_prefix const_term
+   22                | . const_term
+   23 const_prefix: . "~"
+   24             | . "!"
+   25             | . "+"
+   26             | . "-"
+   39 const_term: . "integer constant"
+   40           | . "floating-point constant"
+   41           | . const_id
+   46 enumerator: const_id "=" . const_exp_body
+
+    "identifier"               shift, and go to state 35
+    "floating-point constant"  shift, and go to state 53
+    "integer constant"         shift, and go to state 54
+    "!"                        shift, and go to state 55
+    "~"                        shift, and go to state 56
+    "-"                        shift, and go to state 57
+    "+"                        shift, and go to state 58
+
+    const_id         go to state 59
+    const_exp_body   go to state 102
+    const_pref_term  go to state 61
+    const_prefix     go to state 62
+    const_term       go to state 63
+
+
+State 93
+
+   42 enum_def: "ENUM" "left brace" enum_list "right brace" .
+
+    $default  reduce using rule 42 (enum_def)
+
+
+State 94
+
+   16 const_id: . "identifier"
+   43 enum_list: enum_list "comma" . enumerator
+   45 enumerator: . const_id
+   46           | . const_id "=" const_exp_body
+
+    "identifier"  shift, and go to state 35
+
+    const_id    go to state 64
+    enumerator  go to state 103
+
+
+State 95
+
+  187 register_def: "INPUT" reg_id reg_addr reg_addr . register_size "semicolon"
+  190 register_size: . "integer constant"
+
+    "integer constant"  shift, and go to state 104
+
+    register_size  go to state 105
+
+
+State 96
+
+  188 register_def: "OUTPUT" reg_id reg_addr reg_addr . register_size "semicolon"
+  190 register_size: . "integer constant"
+
+    "integer constant"  shift, and go to state 104
+
+    register_size  go to state 106
+
+
+State 97
+
+   53 proc_def: "PROC" proc_id "left brace" . var_list state_def_list "right brace"
+   54         | "PROC" proc_id "left brace" . state_def_list "right brace"
+   56 var_list: . var_list var_def
+   57         | . var_list var_decl
+   58         | . var_def
+   59         | . var_decl
+   60 state_def_list: . state_def
+   61               | . state_def_list state_def
+   62 state_def: . "STATE" state_id "left brace" statements_list timeout_statement "right brace"
+   63          | . "STATE" state_id "left brace" statements_list "right brace"
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  170 var_def: . phys_var_def scope_spec "semicolon"
+  171        | . calc_var_def scope_spec "semicolon"
+  172 phys_var_def: . c_type_spec var_id "=" "left brace" reg_bits_spec_list "right brace"
+  178 calc_var_def: . c_type_spec var_id
+  184 var_decl: . "FROM" "PROC" proc_id var_id_list "semicolon"
+
+    "FROM"      shift, and go to state 107
+    "STATE"     shift, and go to state 108
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    var_list        go to state 109
+    state_def_list  go to state 110
+    state_def       go to state 111
+    c_type_spec     go to state 112
+    singness_spec   go to state 30
+    size_spec       go to state 31
+    var_def         go to state 113
+    phys_var_def    go to state 114
+    calc_var_def    go to state 115
+    var_decl        go to state 116
+
+
+State 98
+
+  194 c_type_spec_list: c_type_spec .
+
+    $default  reduce using rule 194 (c_type_spec_list)
+
+
+State 99
+
+  191 func_decl: c_type_spec func_id "left parentheses" c_type_spec_list . "right parentheses" "semicolon"
+  193 c_type_spec_list: c_type_spec_list . "comma" c_type_spec
+
+    "right parentheses"  shift, and go to state 117
+    "comma"              shift, and go to state 118
+
+
+State 100
+
+   16 const_id: . "identifier"
+   19 infix_term_list: infix_term_list const_infix . const_pref_term
+   21 const_pref_term: . const_prefix const_term
+   22                | . const_term
+   23 const_prefix: . "~"
+   24             | . "!"
+   25             | . "+"
+   26             | . "-"
+   39 const_term: . "integer constant"
+   40           | . "floating-point constant"
+   41           | . const_id
+
+    "identifier"               shift, and go to state 35
+    "floating-point constant"  shift, and go to state 53
+    "integer constant"         shift, and go to state 54
+    "!"                        shift, and go to state 55
+    "~"                        shift, and go to state 56
+    "-"                        shift, and go to state 57
+    "+"                        shift, and go to state 58
+
+    const_id         go to state 59
+    const_pref_term  go to state 119
+    const_prefix     go to state 62
+    const_term       go to state 63
+
+
+State 101
+
+   20 infix_term_list: const_infix const_pref_term .
+
+    $default  reduce using rule 20 (infix_term_list)
+
+
+State 102
+
+   46 enumerator: const_id "=" const_exp_body .
+
+    $default  reduce using rule 46 (enumerator)
+
+
+State 103
+
+   43 enum_list: enum_list "comma" enumerator .
+
+    $default  reduce using rule 43 (enum_list)
+
+
+State 104
+
+  190 register_size: "integer constant" .
+
+    $default  reduce using rule 190 (register_size)
+
+
+State 105
+
+  187 register_def: "INPUT" reg_id reg_addr reg_addr register_size . "semicolon"
+
+    "semicolon"  shift, and go to state 120
+
+
+State 106
+
+  188 register_def: "OUTPUT" reg_id reg_addr reg_addr register_size . "semicolon"
+
+    "semicolon"  shift, and go to state 121
+
+
+State 107
+
+  184 var_decl: "FROM" . "PROC" proc_id var_id_list "semicolon"
+
+    "PROC"  shift, and go to state 122
+
+
+State 108
+
+   62 state_def: "STATE" . state_id "left brace" statements_list timeout_statement "right brace"
+   63          | "STATE" . state_id "left brace" statements_list "right brace"
+   64 state_id: . "identifier"
+
+    "identifier"  shift, and go to state 123
+
+    state_id  go to state 124
+
+
+State 109
+
+   53 proc_def: "PROC" proc_id "left brace" var_list . state_def_list "right brace"
+   56 var_list: var_list . var_def
+   57         | var_list . var_decl
+   60 state_def_list: . state_def
+   61               | . state_def_list state_def
+   62 state_def: . "STATE" state_id "left brace" statements_list timeout_statement "right brace"
+   63          | . "STATE" state_id "left brace" statements_list "right brace"
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  170 var_def: . phys_var_def scope_spec "semicolon"
+  171        | . calc_var_def scope_spec "semicolon"
+  172 phys_var_def: . c_type_spec var_id "=" "left brace" reg_bits_spec_list "right brace"
+  178 calc_var_def: . c_type_spec var_id
+  184 var_decl: . "FROM" "PROC" proc_id var_id_list "semicolon"
+
+    "FROM"      shift, and go to state 107
+    "STATE"     shift, and go to state 108
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    state_def_list  go to state 125
+    state_def       go to state 111
+    c_type_spec     go to state 112
+    singness_spec   go to state 30
+    size_spec       go to state 31
+    var_def         go to state 126
+    phys_var_def    go to state 114
+    calc_var_def    go to state 115
+    var_decl        go to state 127
+
+
+State 110
+
+   54 proc_def: "PROC" proc_id "left brace" state_def_list . "right brace"
+   61 state_def_list: state_def_list . state_def
+   62 state_def: . "STATE" state_id "left brace" statements_list timeout_statement "right brace"
+   63          | . "STATE" state_id "left brace" statements_list "right brace"
+
+    "STATE"        shift, and go to state 108
+    "right brace"  shift, and go to state 128
+
+    state_def  go to state 129
+
+
+State 111
+
+   60 state_def_list: state_def .
+
+    $default  reduce using rule 60 (state_def_list)
+
+
+State 112
+
+  172 phys_var_def: c_type_spec . var_id "=" "left brace" reg_bits_spec_list "right brace"
+  173 var_id: . "identifier"
+  178 calc_var_def: c_type_spec . var_id
+
+    "identifier"  shift, and go to state 130
+
+    var_id  go to state 131
+
+
+State 113
+
+   58 var_list: var_def .
+
+    $default  reduce using rule 58 (var_list)
+
+
+State 114
+
+  170 var_def: phys_var_def . scope_spec "semicolon"
+  179 scope_spec: . "LOCAL"
+  180           | . "FOR" "ALL"
+  181           | . "FOR" proc_id_list
+
+    "LOCAL"  shift, and go to state 132
+    "FOR"    shift, and go to state 133
+
+    scope_spec  go to state 134
+
+
+State 115
+
+  171 var_def: calc_var_def . scope_spec "semicolon"
+  179 scope_spec: . "LOCAL"
+  180           | . "FOR" "ALL"
+  181           | . "FOR" proc_id_list
+
+    "LOCAL"  shift, and go to state 132
+    "FOR"    shift, and go to state 133
+
+    scope_spec  go to state 135
+
+
+State 116
+
+   59 var_list: var_decl .
+
+    $default  reduce using rule 59 (var_list)
+
+
+State 117
+
+  191 func_decl: c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" . "semicolon"
+
+    "semicolon"  shift, and go to state 136
+
+
+State 118
+
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+  193 c_type_spec_list: c_type_spec_list "comma" . c_type_spec
+
+    "BOOL"      shift, and go to state 13
+    "VOID"      shift, and go to state 14
+    "FLOAT"     shift, and go to state 15
+    "DOUBLE"    shift, and go to state 16
+    "SIGNED"    shift, and go to state 17
+    "UNSIGNED"  shift, and go to state 18
+    "SHORT"     shift, and go to state 19
+    "LONG"      shift, and go to state 20
+    "INT"       shift, and go to state 21
+
+    c_type_spec    go to state 137
+    singness_spec  go to state 30
+    size_spec      go to state 31
+
+
+State 119
+
+   19 infix_term_list: infix_term_list const_infix const_pref_term .
+
+    $default  reduce using rule 19 (infix_term_list)
+
+
+State 120
+
+  187 register_def: "INPUT" reg_id reg_addr reg_addr register_size "semicolon" .
+
+    $default  reduce using rule 187 (register_def)
+
+
+State 121
+
+  188 register_def: "OUTPUT" reg_id reg_addr reg_addr register_size "semicolon" .
+
+    $default  reduce using rule 188 (register_def)
+
+
+State 122
+
+   55 proc_id: . "identifier"
+  184 var_decl: "FROM" "PROC" . proc_id var_id_list "semicolon"
+
+    "identifier"  shift, and go to state 70
+
+    proc_id  go to state 138
+
+
+State 123
+
+   64 state_id: "identifier" .
+
+    $default  reduce using rule 64 (state_id)
+
+
+State 124
+
+   62 state_def: "STATE" state_id . "left brace" statements_list timeout_statement "right brace"
+   63          | "STATE" state_id . "left brace" statements_list "right brace"
+
+    "left brace"  shift, and go to state 139
+
+
+State 125
+
+   53 proc_def: "PROC" proc_id "left brace" var_list state_def_list . "right brace"
+   61 state_def_list: state_def_list . state_def
+   62 state_def: . "STATE" state_id "left brace" statements_list timeout_statement "right brace"
+   63          | . "STATE" state_id "left brace" statements_list "right brace"
+
+    "STATE"        shift, and go to state 108
+    "right brace"  shift, and go to state 140
+
+    state_def  go to state 129
+
+
+State 126
+
+   56 var_list: var_list var_def .
+
+    $default  reduce using rule 56 (var_list)
+
+
+State 127
+
+   57 var_list: var_list var_decl .
+
+    $default  reduce using rule 57 (var_list)
+
+
+State 128
+
+   54 proc_def: "PROC" proc_id "left brace" state_def_list "right brace" .
+
+    $default  reduce using rule 54 (proc_def)
+
+
+State 129
+
+   61 state_def_list: state_def_list state_def .
+
+    $default  reduce using rule 61 (state_def_list)
+
+
+State 130
+
+  173 var_id: "identifier" .
+
+    $default  reduce using rule 173 (var_id)
+
+
+State 131
+
+  172 phys_var_def: c_type_spec var_id . "=" "left brace" reg_bits_spec_list "right brace"
+  178 calc_var_def: c_type_spec var_id .  ["LOCAL", "FOR"]
+
+    "="  shift, and go to state 141
+
+    $default  reduce using rule 178 (calc_var_def)
+
+
+State 132
+
+  179 scope_spec: "LOCAL" .
+
+    $default  reduce using rule 179 (scope_spec)
+
+
+State 133
+
+   55 proc_id: . "identifier"
+  180 scope_spec: "FOR" . "ALL"
+  181           | "FOR" . proc_id_list
+  182 proc_id_list: . proc_id_list "comma" proc_id
+  183             | . proc_id
+
+    "ALL"         shift, and go to state 142
+    "identifier"  shift, and go to state 70
+
+    proc_id       go to state 143
+    proc_id_list  go to state 144
+
+
+State 134
+
+  170 var_def: phys_var_def scope_spec . "semicolon"
+
+    "semicolon"  shift, and go to state 145
+
+
+State 135
+
+  171 var_def: calc_var_def scope_spec . "semicolon"
+
+    "semicolon"  shift, and go to state 146
+
+
+State 136
+
+  191 func_decl: c_type_spec func_id "left parentheses" c_type_spec_list "right parentheses" "semicolon" .
+
+    $default  reduce using rule 191 (func_decl)
+
+
+State 137
+
+  193 c_type_spec_list: c_type_spec_list "comma" c_type_spec .
+
+    $default  reduce using rule 193 (c_type_spec_list)
+
+
+State 138
+
+  173 var_id: . "identifier"
+  184 var_decl: "FROM" "PROC" proc_id . var_id_list "semicolon"
+  185 var_id_list: . var_id_list "comma" var_id
+  186            | . var_id
+
+    "identifier"  shift, and go to state 130
+
+    var_id       go to state 147
+    var_id_list  go to state 148
+
+
+State 139
+
+   62 state_def: "STATE" state_id "left brace" . statements_list timeout_statement "right brace"
+   63          | "STATE" state_id "left brace" . statements_list "right brace"
+   65 statements_list: . statements_list statement
+   66                | . statement
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statements_list       go to state 171
+    statement             go to state 172
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 140
+
+   53 proc_def: "PROC" proc_id "left brace" var_list state_def_list "right brace" .
+
+    $default  reduce using rule 53 (proc_def)
+
+
+State 141
+
+  172 phys_var_def: c_type_spec var_id "=" . "left brace" reg_bits_spec_list "right brace"
+
+    "left brace"  shift, and go to state 193
+
+
+State 142
+
+  180 scope_spec: "FOR" "ALL" .
+
+    $default  reduce using rule 180 (scope_spec)
+
+
+State 143
+
+  183 proc_id_list: proc_id .
+
+    $default  reduce using rule 183 (proc_id_list)
+
+
+State 144
+
+  181 scope_spec: "FOR" proc_id_list .  ["semicolon"]
+  182 proc_id_list: proc_id_list . "comma" proc_id
+
+    "comma"  shift, and go to state 194
+
+    $default  reduce using rule 181 (scope_spec)
+
+
+State 145
+
+  170 var_def: phys_var_def scope_spec "semicolon" .
+
+    $default  reduce using rule 170 (var_def)
+
+
+State 146
+
+  171 var_def: calc_var_def scope_spec "semicolon" .
+
+    $default  reduce using rule 171 (var_def)
+
+
+State 147
+
+  186 var_id_list: var_id .
+
+    $default  reduce using rule 186 (var_id_list)
+
+
+State 148
+
+  184 var_decl: "FROM" "PROC" proc_id var_id_list . "semicolon"
+  185 var_id_list: var_id_list . "comma" var_id
+
+    "semicolon"  shift, and go to state 195
+    "comma"      shift, and go to state 196
+
+
+State 149
+
+   55 proc_id: . "identifier"
+  117 primary_expr: "PROC" . proc_id "IN" "STATE" "STOP"
+  118             | "PROC" . proc_id "IN" "STATE" "ERROR"
+  119             | "PROC" . proc_id "IS" "ACTIVE"
+  120             | "PROC" . proc_id "IS" "INACTIVE"
+
+    "identifier"  shift, and go to state 70
+
+    proc_id  go to state 197
+
+
+State 150
+
+   90 switch_statement: "SWITCH" . "left parentheses" expr "right parentheses" statement
+
+    "left parentheses"  shift, and go to state 198
+
+
+State 151
+
+   91 labeled_statement: "CASE" . expr "colon" statement
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    expr             go to state 199
+    assignment_expr  go to state 186
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 152
+
+   88 if_statement: "IF\t" . "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | "IF\t" . "left parentheses" expr "right parentheses" statement
+
+    "left parentheses"  shift, and go to state 200
+
+
+State 153
+
+   55 proc_id: . "identifier"
+   95 start_statement: "START" . proc_id "semicolon"
+
+    "identifier"  shift, and go to state 70
+
+    proc_id  go to state 201
+
+
+State 154
+
+   55 proc_id: . "identifier"
+   96 stop_statement: "STOP" . proc_id "semicolon"
+   97               | "STOP" . "semicolon"
+
+    "identifier"  shift, and go to state 70
+    "semicolon"   shift, and go to state 202
+
+    proc_id  go to state 203
+
+
+State 155
+
+   55 proc_id: . "identifier"
+   98 error_statement: "ERROR" . proc_id "semicolon"
+   99                | "ERROR" . "semicolon"
+
+    "identifier"  shift, and go to state 70
+    "semicolon"   shift, and go to state 204
+
+    proc_id  go to state 205
+
+
+State 156
+
+   82 restart_statement: "RESTART" . "semicolon"
+
+    "semicolon"  shift, and go to state 206
+
+
+State 157
+
+   92 loop_statement: "LOOP" . "semicolon"
+
+    "semicolon"  shift, and go to state 207
+
+
+State 158
+
+   84 state_transition: "SET" . "STATE" state_id "semicolon"
+   85                 | "SET" . "NEXT" "semicolon"
+
+    "STATE"  shift, and go to state 208
+    "NEXT"   shift, and go to state 209
+
+
+State 159
+
+   83 reset_statement: "RESET" . "TIMEOUT" "semicolon"
+
+    "TIMEOUT"  shift, and go to state 210
+
+
+State 160
+
+  108 postfix_expr: "identifier" . "left parentheses" "right parentheses"
+  109             | "identifier" . "left parentheses" arg_expr_list "right parentheses"
+  115 primary_expr: "identifier" .  ["right parentheses", "semicolon", "colon", "=", "comma", "&", "-", "+", "*", "/", "%", "<", ">", "^", "|", "==", "!=", "<=", ">=", "++", "--", ">>", "<<", "||", "&&", ">>=", "<<=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|="]
+
+    "left parentheses"  shift, and go to state 211
+
+    $default  reduce using rule 115 (primary_expr)
+
+
+State 161
+
+  114 primary_expr: "floating-point constant" .
+
+    $default  reduce using rule 114 (primary_expr)
+
+
+State 162
+
+  113 primary_expr: "integer constant" .
+
+    $default  reduce using rule 113 (primary_expr)
+
+
+State 163
+
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  116             | "left parentheses" . expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  122          | "left parentheses" . c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+  159 c_type_spec: . "BOOL"
+  160            | . "VOID"
+  161            | . "FLOAT"
+  162            | . "DOUBLE"
+  163            | . singness_spec size_spec
+  164            | . size_spec
+  165 singness_spec: . "SIGNED"
+  166              | . "UNSIGNED"
+  167 size_spec: . "SHORT"
+  168          | . "INT"
+  169          | . "LONG"
+
+    "PROC"                     shift, and go to state 149
+    "BOOL"                     shift, and go to state 13
+    "VOID"                     shift, and go to state 14
+    "FLOAT"                    shift, and go to state 15
+    "DOUBLE"                   shift, and go to state 16
+    "SIGNED"                   shift, and go to state 17
+    "UNSIGNED"                 shift, and go to state 18
+    "SHORT"                    shift, and go to state 19
+    "LONG"                     shift, and go to state 20
+    "INT"                      shift, and go to state 21
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    expr             go to state 212
+    assignment_expr  go to state 186
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+    c_type_spec      go to state 213
+    singness_spec    go to state 30
+    size_spec        go to state 31
+
+
+State 164
+
+   87 expression_statement: "semicolon" .
+
+    $default  reduce using rule 87 (expression_statement)
+
+
+State 165
+
+   65 statements_list: . statements_list statement
+   66                | . statement
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   93                   | "left brace" . statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   94                   | "left brace" . "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "right brace"              shift, and go to state 214
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statements_list       go to state 215
+    statement             go to state 172
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 166
+
+  147 unary_op: "!" .
+
+    $default  reduce using rule 147 (unary_op)
+
+
+State 167
+
+  146 unary_op: "~" .
+
+    $default  reduce using rule 146 (unary_op)
+
+
+State 168
+
+  145 unary_op: "-" .
+
+    $default  reduce using rule 145 (unary_op)
+
+
+State 169
+
+  143 unary_op: "++" .
+
+    $default  reduce using rule 143 (unary_op)
+
+
+State 170
+
+  144 unary_op: "--" .
+
+    $default  reduce using rule 144 (unary_op)
+
+
+State 171
+
+   62 state_def: "STATE" state_id "left brace" statements_list . timeout_statement "right brace"
+   63          | "STATE" state_id "left brace" statements_list . "right brace"
+   65 statements_list: statements_list . statement
+   67 timeout_statement: . "TIMEOUT" timeout_arg statement
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "TIMEOUT"                  shift, and go to state 216
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "right brace"              shift, and go to state 217
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    timeout_statement     go to state 218
+    statement             go to state 219
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 172
+
+   66 statements_list: statement .
+
+    $default  reduce using rule 66 (statements_list)
+
+
+State 173
+
+   79 statement: restart_statement .
+
+    $default  reduce using rule 79 (statement)
+
+
+State 174
+
+   80 statement: reset_statement .
+
+    $default  reduce using rule 80 (statement)
+
+
+State 175
+
+   78 statement: state_transition .
+
+    $default  reduce using rule 78 (statement)
+
+
+State 176
+
+   81 statement: expression_statement .
+
+    $default  reduce using rule 81 (statement)
+
+
+State 177
+
+   74 statement: if_statement .
+
+    $default  reduce using rule 74 (statement)
+
+
+State 178
+
+   75 statement: switch_statement .
+
+    $default  reduce using rule 75 (statement)
+
+
+State 179
+
+   76 statement: labeled_statement .
+
+    $default  reduce using rule 76 (statement)
+
+
+State 180
+
+   77 statement: loop_statement .
+
+    $default  reduce using rule 77 (statement)
+
+
+State 181
+
+   70 statement: compound_statement .
+
+    $default  reduce using rule 70 (statement)
+
+
+State 182
+
+   71 statement: start_statement .
+
+    $default  reduce using rule 71 (statement)
+
+
+State 183
+
+   72 statement: stop_statement .
+
+    $default  reduce using rule 72 (statement)
+
+
+State 184
+
+   73 statement: error_statement .
+
+    $default  reduce using rule 73 (statement)
+
+
+State 185
+
+   86 expression_statement: expr . "semicolon"
+
+    "semicolon"  shift, and go to state 220
+
+
+State 186
+
+  100 expr: assignment_expr .
+
+    $default  reduce using rule 100 (expr)
+
+
+State 187
+
+  101 assignment_expr: binary_expr .  ["right parentheses", "semicolon", "colon", "comma"]
+  104 binary_expr: binary_expr . binary_op cast_expr
+  125 binary_op: . "||"
+  126          | . "&&"
+  127          | . "|"
+  128          | . "^"
+  129          | . "&"
+  130          | . "=="
+  131          | . "!="
+  132          | . "<"
+  133          | . ">"
+  134          | . "<="
+  135          | . ">="
+  136          | . "<<"
+  137          | . ">>"
+  138          | . "+"
+  139          | . "-"
+  140          | . "*"
+  141          | . "/"
+  142          | . "%"
+
+    "&"   shift, and go to state 221
+    "-"   shift, and go to state 222
+    "+"   shift, and go to state 223
+    "*"   shift, and go to state 224
+    "/"   shift, and go to state 225
+    "%"   shift, and go to state 226
+    "<"   shift, and go to state 227
+    ">"   shift, and go to state 228
+    "^"   shift, and go to state 229
+    "|"   shift, and go to state 230
+    "=="  shift, and go to state 231
+    "!="  shift, and go to state 232
+    "<="  shift, and go to state 233
+    ">="  shift, and go to state 234
+    ">>"  shift, and go to state 235
+    "<<"  shift, and go to state 236
+    "||"  shift, and go to state 237
+    "&&"  shift, and go to state 238
+
+    $default  reduce using rule 101 (assignment_expr)
+
+    binary_op  go to state 239
+
+
+State 188
+
+  102 assignment_expr: unary_expr . assignement_op assignment_expr
+  121 cast_expr: unary_expr .  ["right parentheses", "semicolon", "colon", "comma", "&", "-", "+", "*", "/", "%", "<", ">", "^", "|", "==", "!=", "<=", ">=", ">>", "<<", "||", "&&"]
+  148 assignement_op: . "="
+  149               | . ">>="
+  150               | . "<<="
+  151               | . "+="
+  152               | . "-="
+  153               | . "*="
+  154               | . "/="
+  155               | . "%="
+  156               | . "&="
+  157               | . "^="
+  158               | . "|="
+
+    "="    shift, and go to state 240
+    ">>="  shift, and go to state 241
+    "<<="  shift, and go to state 242
+    "+="   shift, and go to state 243
+    "-="   shift, and go to state 244
+    "*="   shift, and go to state 245
+    "/="   shift, and go to state 246
+    "%="   shift, and go to state 247
+    "&="   shift, and go to state 248
+    "^="   shift, and go to state 249
+    "|="   shift, and go to state 250
+
+    $default  reduce using rule 121 (cast_expr)
+
+    assignement_op  go to state 251
+
+
+State 189
+
+  105 unary_expr: postfix_expr .  ["right parentheses", "semicolon", "colon", "=", "comma", "&", "-", "+", "*", "/", "%", "<", ">", "^", "|", "==", "!=", "<=", ">=", ">>", "<<", "||", "&&", ">>=", "<<=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|="]
+  110 postfix_expr: postfix_expr . postfix_op
+  123 postfix_op: . "++"
+  124           | . "--"
+
+    "++"  shift, and go to state 252
+    "--"  shift, and go to state 253
+
+    $default  reduce using rule 105 (unary_expr)
+
+    postfix_op  go to state 254
+
+
+State 190
+
+  107 postfix_expr: primary_expr .
+
+    $default  reduce using rule 107 (postfix_expr)
+
+
+State 191
+
+  103 binary_expr: cast_expr .
+
+    $default  reduce using rule 103 (binary_expr)
+
+
+State 192
+
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  106           | unary_op . unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 255
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    unary_expr    go to state 256
+    postfix_expr  go to state 189
+    primary_expr  go to state 190
+    unary_op      go to state 192
+
+
+State 193
+
+  172 phys_var_def: c_type_spec var_id "=" "left brace" . reg_bits_spec_list "right brace"
+  174 reg_id: . "identifier"
+  175 reg_bits_spec_list: . reg_bits_spec_list "comma" reg_bits_spec
+  176                   | . reg_bits_spec
+  177 reg_bits_spec: . reg_id "left bracket" "integer constant" "right bracket"
+
+    "identifier"  shift, and go to state 38
+
+    reg_id              go to state 257
+    reg_bits_spec_list  go to state 258
+    reg_bits_spec       go to state 259
+
+
+State 194
+
+   55 proc_id: . "identifier"
+  182 proc_id_list: proc_id_list "comma" . proc_id
+
+    "identifier"  shift, and go to state 70
+
+    proc_id  go to state 260
+
+
+State 195
+
+  184 var_decl: "FROM" "PROC" proc_id var_id_list "semicolon" .
+
+    $default  reduce using rule 184 (var_decl)
+
+
+State 196
+
+  173 var_id: . "identifier"
+  185 var_id_list: var_id_list "comma" . var_id
+
+    "identifier"  shift, and go to state 130
+
+    var_id  go to state 261
+
+
+State 197
+
+  117 primary_expr: "PROC" proc_id . "IN" "STATE" "STOP"
+  118             | "PROC" proc_id . "IN" "STATE" "ERROR"
+  119             | "PROC" proc_id . "IS" "ACTIVE"
+  120             | "PROC" proc_id . "IS" "INACTIVE"
+
+    "IN"  shift, and go to state 262
+    "IS"  shift, and go to state 263
+
+
+State 198
+
+   90 switch_statement: "SWITCH" "left parentheses" . expr "right parentheses" statement
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    expr             go to state 264
+    assignment_expr  go to state 186
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 199
+
+   91 labeled_statement: "CASE" expr . "colon" statement
+
+    "colon"  shift, and go to state 265
+
+
+State 200
+
+   88 if_statement: "IF\t" "left parentheses" . expr "right parentheses" statement "ELSE" statement
+   89             | "IF\t" "left parentheses" . expr "right parentheses" statement
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    expr             go to state 266
+    assignment_expr  go to state 186
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 201
+
+   95 start_statement: "START" proc_id . "semicolon"
+
+    "semicolon"  shift, and go to state 267
+
+
+State 202
+
+   97 stop_statement: "STOP" "semicolon" .
+
+    $default  reduce using rule 97 (stop_statement)
+
+
+State 203
+
+   96 stop_statement: "STOP" proc_id . "semicolon"
+
+    "semicolon"  shift, and go to state 268
+
+
+State 204
+
+   99 error_statement: "ERROR" "semicolon" .
+
+    $default  reduce using rule 99 (error_statement)
+
+
+State 205
+
+   98 error_statement: "ERROR" proc_id . "semicolon"
+
+    "semicolon"  shift, and go to state 269
+
+
+State 206
+
+   82 restart_statement: "RESTART" "semicolon" .
+
+    $default  reduce using rule 82 (restart_statement)
+
+
+State 207
+
+   92 loop_statement: "LOOP" "semicolon" .
+
+    $default  reduce using rule 92 (loop_statement)
+
+
+State 208
+
+   64 state_id: . "identifier"
+   84 state_transition: "SET" "STATE" . state_id "semicolon"
+
+    "identifier"  shift, and go to state 123
+
+    state_id  go to state 270
+
+
+State 209
+
+   85 state_transition: "SET" "NEXT" . "semicolon"
+
+    "semicolon"  shift, and go to state 271
+
+
+State 210
+
+   83 reset_statement: "RESET" "TIMEOUT" . "semicolon"
+
+    "semicolon"  shift, and go to state 272
+
+
+State 211
+
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  108             | "identifier" "left parentheses" . "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  109             | "identifier" "left parentheses" . arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  111 arg_expr_list: . arg_expr_list "comma" assignment_expr
+  112              | . assignment_expr
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "right parentheses"        shift, and go to state 273
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    assignment_expr  go to state 274
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    arg_expr_list    go to state 275
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 212
+
+  116 primary_expr: "left parentheses" expr . "right parentheses"
+
+    "right parentheses"  shift, and go to state 276
+
+
+State 213
+
+  122 cast_expr: "left parentheses" c_type_spec . "right parentheses" cast_expr
+
+    "right parentheses"  shift, and go to state 277
+
+
+State 214
+
+   94 compound_statement: "left brace" "right brace" .
+
+    $default  reduce using rule 94 (compound_statement)
+
+
+State 215
+
+   65 statements_list: statements_list . statement
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   93                   | "left brace" statements_list . "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "right brace"              shift, and go to state 278
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statement             go to state 219
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 216
+
+   16 const_id: . "identifier"
+   67 timeout_statement: "TIMEOUT" . timeout_arg statement
+   68 timeout_arg: . "integer constant"
+   69            | . const_id
+
+    "identifier"        shift, and go to state 35
+    "integer constant"  shift, and go to state 279
+
+    const_id     go to state 280
+    timeout_arg  go to state 281
+
+
+State 217
+
+   63 state_def: "STATE" state_id "left brace" statements_list "right brace" .
+
+    $default  reduce using rule 63 (state_def)
+
+
+State 218
+
+   62 state_def: "STATE" state_id "left brace" statements_list timeout_statement . "right brace"
+
+    "right brace"  shift, and go to state 282
+
+
+State 219
+
+   65 statements_list: statements_list statement .
+
+    $default  reduce using rule 65 (statements_list)
+
+
+State 220
+
+   86 expression_statement: expr "semicolon" .
+
+    $default  reduce using rule 86 (expression_statement)
+
+
+State 221
+
+  129 binary_op: "&" .
+
+    $default  reduce using rule 129 (binary_op)
+
+
+State 222
+
+  139 binary_op: "-" .
+
+    $default  reduce using rule 139 (binary_op)
+
+
+State 223
+
+  138 binary_op: "+" .
+
+    $default  reduce using rule 138 (binary_op)
+
+
+State 224
+
+  140 binary_op: "*" .
+
+    $default  reduce using rule 140 (binary_op)
+
+
+State 225
+
+  141 binary_op: "/" .
+
+    $default  reduce using rule 141 (binary_op)
+
+
+State 226
+
+  142 binary_op: "%" .
+
+    $default  reduce using rule 142 (binary_op)
+
+
+State 227
+
+  132 binary_op: "<" .
+
+    $default  reduce using rule 132 (binary_op)
+
+
+State 228
+
+  133 binary_op: ">" .
+
+    $default  reduce using rule 133 (binary_op)
+
+
+State 229
+
+  128 binary_op: "^" .
+
+    $default  reduce using rule 128 (binary_op)
+
+
+State 230
+
+  127 binary_op: "|" .
+
+    $default  reduce using rule 127 (binary_op)
+
+
+State 231
+
+  130 binary_op: "==" .
+
+    $default  reduce using rule 130 (binary_op)
+
+
+State 232
+
+  131 binary_op: "!=" .
+
+    $default  reduce using rule 131 (binary_op)
+
+
+State 233
+
+  134 binary_op: "<=" .
+
+    $default  reduce using rule 134 (binary_op)
+
+
+State 234
+
+  135 binary_op: ">=" .
+
+    $default  reduce using rule 135 (binary_op)
+
+
+State 235
+
+  137 binary_op: ">>" .
+
+    $default  reduce using rule 137 (binary_op)
+
+
+State 236
+
+  136 binary_op: "<<" .
+
+    $default  reduce using rule 136 (binary_op)
+
+
+State 237
+
+  125 binary_op: "||" .
+
+    $default  reduce using rule 125 (binary_op)
+
+
+State 238
+
+  126 binary_op: "&&" .
+
+    $default  reduce using rule 126 (binary_op)
+
+
+State 239
+
+  104 binary_expr: binary_expr binary_op . cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    unary_expr    go to state 283
+    postfix_expr  go to state 189
+    primary_expr  go to state 190
+    cast_expr     go to state 284
+    unary_op      go to state 192
+
+
+State 240
+
+  148 assignement_op: "=" .
+
+    $default  reduce using rule 148 (assignement_op)
+
+
+State 241
+
+  149 assignement_op: ">>=" .
+
+    $default  reduce using rule 149 (assignement_op)
+
+
+State 242
+
+  150 assignement_op: "<<=" .
+
+    $default  reduce using rule 150 (assignement_op)
+
+
+State 243
+
+  151 assignement_op: "+=" .
+
+    $default  reduce using rule 151 (assignement_op)
+
+
+State 244
+
+  152 assignement_op: "-=" .
+
+    $default  reduce using rule 152 (assignement_op)
+
+
+State 245
+
+  153 assignement_op: "*=" .
+
+    $default  reduce using rule 153 (assignement_op)
+
+
+State 246
+
+  154 assignement_op: "/=" .
+
+    $default  reduce using rule 154 (assignement_op)
+
+
+State 247
+
+  155 assignement_op: "%=" .
+
+    $default  reduce using rule 155 (assignement_op)
+
+
+State 248
+
+  156 assignement_op: "&=" .
+
+    $default  reduce using rule 156 (assignement_op)
+
+
+State 249
+
+  157 assignement_op: "^=" .
+
+    $default  reduce using rule 157 (assignement_op)
+
+
+State 250
+
+  158 assignement_op: "|=" .
+
+    $default  reduce using rule 158 (assignement_op)
+
+
+State 251
+
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  102                | unary_expr assignement_op . assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    assignment_expr  go to state 285
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 252
+
+  123 postfix_op: "++" .
+
+    $default  reduce using rule 123 (postfix_op)
+
+
+State 253
+
+  124 postfix_op: "--" .
+
+    $default  reduce using rule 124 (postfix_op)
+
+
+State 254
+
+  110 postfix_expr: postfix_expr postfix_op .
+
+    $default  reduce using rule 110 (postfix_expr)
+
+
+State 255
+
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  116             | "left parentheses" . expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    expr             go to state 212
+    assignment_expr  go to state 186
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 256
+
+  106 unary_expr: unary_op unary_expr .
+
+    $default  reduce using rule 106 (unary_expr)
+
+
+State 257
+
+  177 reg_bits_spec: reg_id . "left bracket" "integer constant" "right bracket"
+
+    "left bracket"  shift, and go to state 286
+
+
+State 258
+
+  172 phys_var_def: c_type_spec var_id "=" "left brace" reg_bits_spec_list . "right brace"
+  175 reg_bits_spec_list: reg_bits_spec_list . "comma" reg_bits_spec
+
+    "right brace"  shift, and go to state 287
+    "comma"        shift, and go to state 288
+
+
+State 259
+
+  176 reg_bits_spec_list: reg_bits_spec .
+
+    $default  reduce using rule 176 (reg_bits_spec_list)
+
+
+State 260
+
+  182 proc_id_list: proc_id_list "comma" proc_id .
+
+    $default  reduce using rule 182 (proc_id_list)
+
+
+State 261
+
+  185 var_id_list: var_id_list "comma" var_id .
+
+    $default  reduce using rule 185 (var_id_list)
+
+
+State 262
+
+  117 primary_expr: "PROC" proc_id "IN" . "STATE" "STOP"
+  118             | "PROC" proc_id "IN" . "STATE" "ERROR"
+
+    "STATE"  shift, and go to state 289
+
+
+State 263
+
+  119 primary_expr: "PROC" proc_id "IS" . "ACTIVE"
+  120             | "PROC" proc_id "IS" . "INACTIVE"
+
+    "ACTIVE"    shift, and go to state 290
+    "INACTIVE"  shift, and go to state 291
+
+
+State 264
+
+   90 switch_statement: "SWITCH" "left parentheses" expr . "right parentheses" statement
+
+    "right parentheses"  shift, and go to state 292
+
+
+State 265
+
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   91                  | "CASE" expr "colon" . statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statement             go to state 293
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 266
+
+   88 if_statement: "IF\t" "left parentheses" expr . "right parentheses" statement "ELSE" statement
+   89             | "IF\t" "left parentheses" expr . "right parentheses" statement
+
+    "right parentheses"  shift, and go to state 294
+
+
+State 267
+
+   95 start_statement: "START" proc_id "semicolon" .
+
+    $default  reduce using rule 95 (start_statement)
+
+
+State 268
+
+   96 stop_statement: "STOP" proc_id "semicolon" .
+
+    $default  reduce using rule 96 (stop_statement)
+
+
+State 269
+
+   98 error_statement: "ERROR" proc_id "semicolon" .
+
+    $default  reduce using rule 98 (error_statement)
+
+
+State 270
+
+   84 state_transition: "SET" "STATE" state_id . "semicolon"
+
+    "semicolon"  shift, and go to state 295
+
+
+State 271
+
+   85 state_transition: "SET" "NEXT" "semicolon" .
+
+    $default  reduce using rule 85 (state_transition)
+
+
+State 272
+
+   83 reset_statement: "RESET" "TIMEOUT" "semicolon" .
+
+    $default  reduce using rule 83 (reset_statement)
+
+
+State 273
+
+  108 postfix_expr: "identifier" "left parentheses" "right parentheses" .
+
+    $default  reduce using rule 108 (postfix_expr)
+
+
+State 274
+
+  112 arg_expr_list: assignment_expr .
+
+    $default  reduce using rule 112 (arg_expr_list)
+
+
+State 275
+
+  109 postfix_expr: "identifier" "left parentheses" arg_expr_list . "right parentheses"
+  111 arg_expr_list: arg_expr_list . "comma" assignment_expr
+
+    "right parentheses"  shift, and go to state 296
+    "comma"              shift, and go to state 297
+
+
+State 276
+
+  116 primary_expr: "left parentheses" expr "right parentheses" .
+
+    $default  reduce using rule 116 (primary_expr)
+
+
+State 277
+
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  122          | "left parentheses" c_type_spec "right parentheses" . cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    unary_expr    go to state 283
+    postfix_expr  go to state 189
+    primary_expr  go to state 190
+    cast_expr     go to state 298
+    unary_op      go to state 192
+
+
+State 278
+
+   93 compound_statement: "left brace" statements_list "right brace" .
+
+    $default  reduce using rule 93 (compound_statement)
+
+
+State 279
+
+   68 timeout_arg: "integer constant" .
+
+    $default  reduce using rule 68 (timeout_arg)
+
+
+State 280
+
+   69 timeout_arg: const_id .
+
+    $default  reduce using rule 69 (timeout_arg)
+
+
+State 281
+
+   67 timeout_statement: "TIMEOUT" timeout_arg . statement
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statement             go to state 299
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 282
+
+   62 state_def: "STATE" state_id "left brace" statements_list timeout_statement "right brace" .
+
+    $default  reduce using rule 62 (state_def)
+
+
+State 283
+
+  121 cast_expr: unary_expr .
+
+    $default  reduce using rule 121 (cast_expr)
+
+
+State 284
+
+  104 binary_expr: binary_expr binary_op cast_expr .
+
+    $default  reduce using rule 104 (binary_expr)
+
+
+State 285
+
+  102 assignment_expr: unary_expr assignement_op assignment_expr .
+
+    $default  reduce using rule 102 (assignment_expr)
+
+
+State 286
+
+  177 reg_bits_spec: reg_id "left bracket" . "integer constant" "right bracket"
+
+    "integer constant"  shift, and go to state 300
+
+
+State 287
+
+  172 phys_var_def: c_type_spec var_id "=" "left brace" reg_bits_spec_list "right brace" .
+
+    $default  reduce using rule 172 (phys_var_def)
+
+
+State 288
+
+  174 reg_id: . "identifier"
+  175 reg_bits_spec_list: reg_bits_spec_list "comma" . reg_bits_spec
+  177 reg_bits_spec: . reg_id "left bracket" "integer constant" "right bracket"
+
+    "identifier"  shift, and go to state 38
+
+    reg_id         go to state 257
+    reg_bits_spec  go to state 301
+
+
+State 289
+
+  117 primary_expr: "PROC" proc_id "IN" "STATE" . "STOP"
+  118             | "PROC" proc_id "IN" "STATE" . "ERROR"
+
+    "STOP"   shift, and go to state 302
+    "ERROR"  shift, and go to state 303
+
+
+State 290
+
+  119 primary_expr: "PROC" proc_id "IS" "ACTIVE" .
+
+    $default  reduce using rule 119 (primary_expr)
+
+
+State 291
+
+  120 primary_expr: "PROC" proc_id "IS" "INACTIVE" .
+
+    $default  reduce using rule 120 (primary_expr)
+
+
+State 292
+
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   90                 | "SWITCH" "left parentheses" expr "right parentheses" . statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statement             go to state 304
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 293
+
+   91 labeled_statement: "CASE" expr "colon" statement .
+
+    $default  reduce using rule 91 (labeled_statement)
+
+
+State 294
+
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   88             | "IF\t" "left parentheses" expr "right parentheses" . statement "ELSE" statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   89             | "IF\t" "left parentheses" expr "right parentheses" . statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statement             go to state 305
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 295
+
+   84 state_transition: "SET" "STATE" state_id "semicolon" .
+
+    $default  reduce using rule 84 (state_transition)
+
+
+State 296
+
+  109 postfix_expr: "identifier" "left parentheses" arg_expr_list "right parentheses" .
+
+    $default  reduce using rule 109 (postfix_expr)
+
+
+State 297
+
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  111 arg_expr_list: arg_expr_list "comma" . assignment_expr
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    assignment_expr  go to state 306
+    binary_expr      go to state 187
+    unary_expr       go to state 188
+    postfix_expr     go to state 189
+    primary_expr     go to state 190
+    cast_expr        go to state 191
+    unary_op         go to state 192
+
+
+State 298
+
+  122 cast_expr: "left parentheses" c_type_spec "right parentheses" cast_expr .
+
+    $default  reduce using rule 122 (cast_expr)
+
+
+State 299
+
+   67 timeout_statement: "TIMEOUT" timeout_arg statement .
+
+    $default  reduce using rule 67 (timeout_statement)
+
+
+State 300
+
+  177 reg_bits_spec: reg_id "left bracket" "integer constant" . "right bracket"
+
+    "right bracket"  shift, and go to state 307
+
+
+State 301
+
+  175 reg_bits_spec_list: reg_bits_spec_list "comma" reg_bits_spec .
+
+    $default  reduce using rule 175 (reg_bits_spec_list)
+
+
+State 302
+
+  117 primary_expr: "PROC" proc_id "IN" "STATE" "STOP" .
+
+    $default  reduce using rule 117 (primary_expr)
+
+
+State 303
+
+  118 primary_expr: "PROC" proc_id "IN" "STATE" "ERROR" .
+
+    $default  reduce using rule 118 (primary_expr)
+
+
+State 304
+
+   90 switch_statement: "SWITCH" "left parentheses" expr "right parentheses" statement .
+
+    $default  reduce using rule 90 (switch_statement)
+
+
+State 305
+
+   88 if_statement: "IF\t" "left parentheses" expr "right parentheses" statement . "ELSE" statement
+   89             | "IF\t" "left parentheses" expr "right parentheses" statement .  ["PROC", "SWITCH", "CASE", "IF\t", "START", "STOP", "ERROR", "RESTART", "LOOP", "SET", "RESET", "TIMEOUT", "identifier", "floating-point constant", "integer constant", "left parentheses", "semicolon", "left brace", "right brace", "!", "~", "-", "++", "--"]
+
+    "ELSE"  shift, and go to state 308
+
+    $default  reduce using rule 89 (if_statement)
+
+    Conflict between rule 89 and token "ELSE" resolved as shift (XIF < "ELSE").
+
+
+State 306
+
+  111 arg_expr_list: arg_expr_list "comma" assignment_expr .
+
+    $default  reduce using rule 111 (arg_expr_list)
+
+
+State 307
+
+  177 reg_bits_spec: reg_id "left bracket" "integer constant" "right bracket" .
+
+    $default  reduce using rule 177 (reg_bits_spec)
+
+
+State 308
+
+   70 statement: . compound_statement
+   71          | . start_statement
+   72          | . stop_statement
+   73          | . error_statement
+   74          | . if_statement
+   75          | . switch_statement
+   76          | . labeled_statement
+   77          | . loop_statement
+   78          | . state_transition
+   79          | . restart_statement
+   80          | . reset_statement
+   81          | . expression_statement
+   82 restart_statement: . "RESTART" "semicolon"
+   83 reset_statement: . "RESET" "TIMEOUT" "semicolon"
+   84 state_transition: . "SET" "STATE" state_id "semicolon"
+   85                 | . "SET" "NEXT" "semicolon"
+   86 expression_statement: . expr "semicolon"
+   87                     | . "semicolon"
+   88 if_statement: . "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement
+   88             | "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" . statement
+   89             | . "IF\t" "left parentheses" expr "right parentheses" statement
+   90 switch_statement: . "SWITCH" "left parentheses" expr "right parentheses" statement
+   91 labeled_statement: . "CASE" expr "colon" statement
+   92 loop_statement: . "LOOP" "semicolon"
+   93 compound_statement: . "left brace" statements_list "right brace"
+   94                   | . "left brace" "right brace"
+   95 start_statement: . "START" proc_id "semicolon"
+   96 stop_statement: . "STOP" proc_id "semicolon"
+   97               | . "STOP" "semicolon"
+   98 error_statement: . "ERROR" proc_id "semicolon"
+   99                | . "ERROR" "semicolon"
+  100 expr: . assignment_expr
+  101 assignment_expr: . binary_expr
+  102                | . unary_expr assignement_op assignment_expr
+  103 binary_expr: . cast_expr
+  104            | . binary_expr binary_op cast_expr
+  105 unary_expr: . postfix_expr
+  106           | . unary_op unary_expr
+  107 postfix_expr: . primary_expr
+  108             | . "identifier" "left parentheses" "right parentheses"
+  109             | . "identifier" "left parentheses" arg_expr_list "right parentheses"
+  110             | . postfix_expr postfix_op
+  113 primary_expr: . "integer constant"
+  114             | . "floating-point constant"
+  115             | . "identifier"
+  116             | . "left parentheses" expr "right parentheses"
+  117             | . "PROC" proc_id "IN" "STATE" "STOP"
+  118             | . "PROC" proc_id "IN" "STATE" "ERROR"
+  119             | . "PROC" proc_id "IS" "ACTIVE"
+  120             | . "PROC" proc_id "IS" "INACTIVE"
+  121 cast_expr: . unary_expr
+  122          | . "left parentheses" c_type_spec "right parentheses" cast_expr
+  143 unary_op: . "++"
+  144         | . "--"
+  145         | . "-"
+  146         | . "~"
+  147         | . "!"
+
+    "PROC"                     shift, and go to state 149
+    "SWITCH"                   shift, and go to state 150
+    "CASE"                     shift, and go to state 151
+    "IF\t"                     shift, and go to state 152
+    "START"                    shift, and go to state 153
+    "STOP"                     shift, and go to state 154
+    "ERROR"                    shift, and go to state 155
+    "RESTART"                  shift, and go to state 156
+    "LOOP"                     shift, and go to state 157
+    "SET"                      shift, and go to state 158
+    "RESET"                    shift, and go to state 159
+    "identifier"               shift, and go to state 160
+    "floating-point constant"  shift, and go to state 161
+    "integer constant"         shift, and go to state 162
+    "left parentheses"         shift, and go to state 163
+    "semicolon"                shift, and go to state 164
+    "left brace"               shift, and go to state 165
+    "!"                        shift, and go to state 166
+    "~"                        shift, and go to state 167
+    "-"                        shift, and go to state 168
+    "++"                       shift, and go to state 169
+    "--"                       shift, and go to state 170
+
+    statement             go to state 309
+    restart_statement     go to state 173
+    reset_statement       go to state 174
+    state_transition      go to state 175
+    expression_statement  go to state 176
+    if_statement          go to state 177
+    switch_statement      go to state 178
+    labeled_statement     go to state 179
+    loop_statement        go to state 180
+    compound_statement    go to state 181
+    start_statement       go to state 182
+    stop_statement        go to state 183
+    error_statement       go to state 184
+    expr                  go to state 185
+    assignment_expr       go to state 186
+    binary_expr           go to state 187
+    unary_expr            go to state 188
+    postfix_expr          go to state 189
+    primary_expr          go to state 190
+    cast_expr             go to state 191
+    unary_op              go to state 192
+
+
+State 309
+
+   88 if_statement: "IF\t" "left parentheses" expr "right parentheses" statement "ELSE" statement .
+
+    $default  reduce using rule 88 (if_statement)
