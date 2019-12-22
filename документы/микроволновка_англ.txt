@@ -84,6 +84,19 @@ PROC Start_Button_Controle { /* при нажатии кнопки пуска
 	}
 }
 
+PROC Lights_alarm { /*зажигает и гасит лампочку, когда
+								это требуется */
+	FROM PROC INIT K_DOOR, Y_WARM, Y_LAMP;
+
+	STATE TermControleForStart
+	{
+		IF ((K_DOOR == OPEN) || (Y_WARM == ON))
+			Y_LAMP = ON;
+		ELSE
+			Y_LAMP = OFF;
+		LOOP;
+	}
+}
 
 PROC Cooking{ /* готовит, IF дверца закрыта и время ненулевое,
 					IF открывается дверца - выключает нагреватель,
@@ -151,19 +164,7 @@ PROC Cooking{ /* готовит, IF дверца закрыта и время н
 
 
 }
-PROC Lights_alarm { /*зажигает и гасит лампочку, когда
-								это требуется */
-	FROM PROC INIT K_DOOR, Y_WARM, Y_LAMP;
 
-	STATE TermControleForStart
-	{
-		IF ((K_DOOR == OPEN) || (Y_WARM == ON))
-			Y_LAMP = ON;
-		ELSE
-			Y_LAMP = OFF;
-		LOOP;
-	}
-}
 
 PROC Clocks
 {

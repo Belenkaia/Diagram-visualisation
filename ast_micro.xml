@@ -63,11 +63,11 @@
 							<next_statement>NEXT</next_statement>
 						</statements_list>
 					</compound_statement>
-					<expression_statement>
+					<expression_else>
 						<statements_list>
                             <expression_statement>O_DRYER=OFF</expression_statement>
 						</statements_list>
-					</expression_statement>
+					</expression_else>
 				</if_statement>
 			</statements_list>
 		</state_def>
