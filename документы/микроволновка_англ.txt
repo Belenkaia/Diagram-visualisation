@@ -74,13 +74,13 @@ PROC Start_Button_Controle { /* при нажатии кнопки пуска
 		IF (K_BUTTON_START == ON) 
 		{
 			COOK_TIME += ONE_MIN;
-			IN NEXT;
+			SET NEXT;
 		}
 	}
 
 	STATE PauseOnButtonBounce
 	{
-		TIMEOUT ONE_SEK IN STATE PressControl;
+		TIMEOUT ONE_SEK SET STATE PressControl;
 	}
 }
 
@@ -101,7 +101,7 @@ PROC Cooking{ /* готовит, IF дверца закрыта и время н
 			IF (COOK_TIME != 0)
 			{
 				Y_WARM = ON;
-				IN NEXT;
+				SET NEXT;
 			}
 		}
 	}
@@ -111,12 +111,12 @@ PROC Cooking{ /* готовит, IF дверца закрыта и время н
 		IF (K_DOOR != OPEN)
 		{
 			Y_WARM = OFF; 
-			IN STATE WaitForDoorClose;
+			SET STATE WaitForDoorClose;
 		}
 		TIMEOUT COOK_TIME 
 		{
 			Y_WARM = OFF;
-			IN NEXT;
+			SET NEXT;
 		}
 	}
 
@@ -127,25 +127,25 @@ PROC Cooking{ /* готовит, IF дверца закрыта и время н
 		TIMEOUT ONE_SEK 
 		{
 			Y_ALARM = OFF;
-			IN STATE Start;
+			SET STATE Start;
 		}
 	}
 
 	STATE WaitForDoorClose
 	{
 		IF (COOK_TIME == 0)
-			IN STATE Start;
+			SET STATE Start;
 		ELSE
 		IF (K_DOOR != OPEN)
 		{
 			Y_WARM = ON;
-			IN STATE Cooking;
+			SET STATE Cooking;
 		}
-		ELSE IN STATE WaitForDoorClose;
+		ELSE SET STATE WaitForDoorClose;
 		TIMEOUT 30 * ONE_MIN 
 		{
 			COOK_TIME = 0;
-			IN STATE Start;
+			SET STATE Start;
 		}
 	}
 
@@ -172,17 +172,17 @@ PROC Clocks
 	STATE INIT
 	{
 		Time = 0;
-		IN STATE Clocks;
+		SET STATE Clocks;
 	}
 	STATE Clocks
 	{
-		IN STATE AddMinute;
+		SET STATE AddMinute;
 	}
 	STATE AddMinute
 	{
 		TIMEOUT ONE_MIN {
 			Time += ONE_MIN;
-			IN STATE Clocks;
+			SET STATE Clocks;
 		}
 	}
 }
@@ -197,7 +197,7 @@ PROC Display_work
 	STATE Start
 	{
 	  TimeTable = Time;
-	  IN STATE ShowTime;
+	  SET STATE ShowTime;
 	}
 	STATE ShowTime
    {
@@ -222,13 +222,13 @@ PROC ChangeTimeButtonControle { /* при нажатии кнопки пуска
 		IF (K_BUTTON_CHANGE_TIME == ON) 
 		{
 			Time += ONE_MIN;
-			IN NEXT;
+			SET NEXT;
 		}
 	}
 	
 	STATE PauseOnButtonBounce
 	{
-		TIMEOUT ONE_SEK IN STATE PressControl;
+		TIMEOUT ONE_SEK SET STATE PressControl;
 	}
 }
 
@@ -241,13 +241,13 @@ PROC HourButtonControle { /* при нажатии кнопки пуска
 		IF (K_BUTTON_HOUR == ON) 
 		{
 			Time += ONE_MIN * 60;
-			IN NEXT;
+			SET NEXT;
 		}
 	}
 
 	STATE PauseOnButtonBounce
 	{
-		TIMEOUT ONE_SEK IN STATE PressControl;
+		TIMEOUT ONE_SEK SET STATE PressControl;
 	}
 }
 }
