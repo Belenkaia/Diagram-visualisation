@@ -1,0 +1,253 @@
+PROGR Micro                                 {          
+TACT 10; /* период активFROMации равен 10 миллисекундам */
+/*###########################################################*/
+/*######### ОПИСАНИЕ КОНСТАНТ ############################*/
+/*###########################################################*/
+CONST ON 1;
+CONST OFF 0;
+CONST OPEN 1;
+CONST CLOSE 0;
+CONST ONE_SEC 100;
+CONST ONE_MIN 60*ONE_SEK;
+/*===========================================================*/
+/*========= БАЗОВЫЕ АДРЕСА МОДУЛЕЙ УСО ===================*/
+/*===========================================================*/
+CONST BA_FPGA1_U1 0XA110; /* ВХОД */
+CONST BA_FPGA3_U1 0XA910; /* ВЫХОД */
+
+
+/*######## ОПИСАНИЕ РЕГИСТРОВ МОДУЛЕЙ УСО #########*/
+/*###########################################################*/
+INPUT LOG_INPUT BA_FPGA1_U1 0 8; /* имя, базовый адрес, № Регистра, 8бит */
+OUTPUT LOG_OUTPUT BA_FPGA3_U1 0 8;
+/*###########################################################*/
+/*######## PROCЕССЫ #########################*/
+/*###########################################################*/
+/*
+* PROCесс INIT. Служит FOR
+* развертывания программы. Этот PROCесс (описанный
+* первым) -- единственно активный PROCесс по запуску.
+* PROCесс INIT содержит описание
+* переменных FOR ссылок FROM других
+* PROCессов. Это удобно: описания LOCALFROMованы в одном
+* месте.
+*/
+PROC INIT{ 
+
+	/* ВХОДНЫЕ СИГНАЛЫ: */
+	LOG K_BUTTON_START = {LOG_INPUT[1]} FOR ALL;
+	LOG K_DOOR = {LOG_INPUT[1]} FOR ALL;
+	LOG K_BUTTON_CHANGE_TIME = {LOG_INPUT[1]} FOR ALL;
+	LOG K_BUTTON_HOUR = {LOG_INPUT[1]} FOR ALL;
+	
+	/* ВЫХОДНЫЕ СИГНАЛЫ (т.к. привязаны к модулю выходов): */
+	LOG Y_WARM = {LOG_OUTPUT[1]} FOR ALL;
+	LOG Y_LAMP = {LOG_OUTPUT[1]} FOR ALL;
+	LOG Y_ALARM = {LOG_OUTPUT[1]} FOR ALL; 
+	LONG COOK_TIME FOR ALL;
+
+	STATE Start
+	{
+		Y_WARM = OFF;
+		Y_LAMP = OFF;
+		Y_ALARM = OFF;
+		COOK_TIME = 0;
+		START PROC Start_Button_Controle;
+		START PROC Cooking;
+		START PROC Lights_alarm;
+		START PROC Clocks;
+		START PROC Display_work;
+		START PROC ChangeTimeButtonControle;
+		START PROC HourButtonControle;
+		STOP;
+	}
+}
+
+
+
+PROC Start_Button_Controle { /* при нажатии кнопки пуска
+							увеличивает время готовки */
+	FROM PROC INIT K_BUTTON_START, COOK_TIME;
+
+	STATE PressControl
+	{
+		IF (K_BUTTON_START == ON) 
+		{
+			COOK_TIME += ONE_MIN;
+			IN NEXT;
+		}
+	}
+
+	STATE PauseOnButtonBounce
+	{
+		TIMEOUT ONE_SEK IN STATE PressControl;
+	}
+}
+
+
+PROC Cooking{ /* готовит, IF дверца закрыта и время ненулевое,
+					IF открывается дверца - выключает нагреватель,
+					IF приготовил - звуковой сигнал 1 сек */
+	FROM PROC INIT K_DOOR, Y_ALARM,
+						Y_WARM, COOK_TIME;
+	
+	STATE Start
+	{
+		IF (K_DOOR = OPEN)
+		{
+			COOK_TIME = 0;
+		} ELSE 
+		{
+			IF (COOK_TIME != 0)
+			{
+				Y_WARM = ON;
+				IN NEXT;
+			}
+		}
+	}
+	
+	STATE Cooking
+	{
+		IF (K_DOOR != OPEN)
+		{
+			Y_WARM = OFF; 
+			IN STATE WaitForDoorClose;
+		}
+		TIMEOUT COOK_TIME 
+		{
+			Y_WARM = OFF;
+			IN NEXT;
+		}
+	}
+
+	STATE VoiceAlarm 
+	{ /* можно выделить в PROCесс, а можно и так */
+		Y_ALARM = ON;
+		COOK_TIME = 0;
+		TIMEOUT ONE_SEK 
+		{
+			Y_ALARM = OFF;
+			IN STATE Start;
+		}
+	}
+
+	STATE WaitForDoorClose
+	{
+		IF (COOK_TIME == 0)
+			IN STATE Start;
+		ELSE
+		IF (K_DOOR != OPEN)
+		{
+			Y_WARM = ON;
+			IN STATE Cooking;
+		}
+		ELSE IN STATE WaitForDoorClose;
+		TIMEOUT 30 * ONE_MIN 
+		{
+			COOK_TIME = 0;
+			IN STATE Start;
+		}
+	}
+
+
+}
+PROC Lights_alarm { /*зажигает и гасит лампочку, когда
+								это требуется */
+	FROM PROC INIT K_DOOR, Y_WARM, Y_LAMP;
+
+	STATE TermControleForStart
+	{
+		IF ((K_DOOR == OPEN) || (Y_WARM == ON))
+			Y_LAMP = ON;
+		ELSE
+			Y_LAMP = OFF;
+		LOOP;
+	}
+}
+
+PROC Clocks
+{
+	LONG Time FOR ALL;
+	
+	STATE INIT
+	{
+		Time = 0;
+		IN STATE Clocks;
+	}
+	STATE Clocks
+	{
+		IN STATE AddMinute;
+	}
+	STATE AddMinute
+	{
+		TIMEOUT ONE_MIN {
+			Time += ONE_MIN;
+			IN STATE Clocks;
+		}
+	}
+}
+
+
+PROC Display_work
+{
+	FROM PROC INIT COOK_TIME;
+	FROM PROC Clocks Time;
+	LONG TimeTable FOR ALL;	
+	
+	STATE Start
+	{
+	  TimeTable = Time;
+	  IN STATE ShowTime;
+	}
+	STATE ShowTime
+   {
+	IF (COOK_TIME == 0){
+		TimeTable = Time;
+	}
+	ELSE 
+	{
+			TimeTable = COOK_TIME;
+	}
+	LOOP;
+	}
+}
+
+PROC ChangeTimeButtonControle { /* при нажатии кнопки пуска
+									увеличивает время на 1 мин */
+	FROM PROC INIT K_BUTTON_CHANGE_TIME;
+	FROM PROC Clocks Time;
+
+	STATE PressControl
+	{
+		IF (K_BUTTON_CHANGE_TIME == ON) 
+		{
+			Time += ONE_MIN;
+			IN NEXT;
+		}
+	}
+	
+	STATE PauseOnButtonBounce
+	{
+		TIMEOUT ONE_SEK IN STATE PressControl;
+	}
+}
+
+PROC HourButtonControle { /* при нажатии кнопки пуска
+						увеличивает время на 1 час */
+	FROM PROC INIT K_BUTTON_HOUR;
+	FROM PROC Clocks Time;
+
+	STATE PressControl{
+		IF (K_BUTTON_HOUR == ON) 
+		{
+			Time += ONE_MIN * 60;
+			IN NEXT;
+		}
+	}
+
+	STATE PauseOnButtonBounce
+	{
+		TIMEOUT ONE_SEK IN STATE PressControl;
+	}
+}
+}
