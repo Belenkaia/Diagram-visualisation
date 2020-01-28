@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <program>
-	<identifier>HandDryerController</identifier>
+	<identifier>Micro</identifier>
 	<tact>100</tact>
 	<const_spec>
 		<identifier>ON</identifier>
